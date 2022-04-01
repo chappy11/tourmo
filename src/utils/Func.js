@@ -8,5 +8,8 @@ export const Func = {
     isValidPhone: (phone) =>{
         let valid = /^(09|\+639) \d{ 9 } $/;
         return valid.test(valid);
+    },
+    filename:(file) =>{
+        return file.split(/(\\|\/)/g).pop();
     }
 }

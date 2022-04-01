@@ -7,6 +7,7 @@ import { Caption, Checkbox, Dialog, Headline, Title } from 'react-native-paper'
 import ImageCropPicker from 'react-native-image-crop-picker'
 import { TextInput } from '../components/TextInput'
 import { Button } from '../components/Button'
+import API from '../endpoints/API'
 
 const Register = () => {
   const [read, setread] = useState(false);
@@ -71,7 +72,35 @@ const Register = () => {
     } else if (data.license === "none") {
       ToastAndroid.show("Please put your Driver's License")
     }else {
-      ToastAndroid.show("Succesfully Registered", ToastAndroid.SHORT);
+      let formData = new FormData(); 
+      formData.append("fname",data.fname);
+      formData.append("mname",data.mname);
+      formData.append("lname",data.lname);
+      formData.append("contact",data.contact);
+      formData.append("email",data.email);
+      formData.append("password",data.pass);
+      formData.append("user_pic",{
+        uri:data.image,
+        type:'image/png',
+        name:Func.filename(data.image)           
+     })
+     formData.append("license",{
+       uri:data.license,
+       type:'image/png',
+       name:Func.filename(data.license)
+     })
+  
+
+     API.register(formData).then(res=>{
+      const {message,data,status} = res.data 
+      if(status == 1){
+        ToastAndroid.show(message)
+      }else{
+        ToastAndroid.show(message)
+      }
+     })
+
+   
     }
   }
   return (
