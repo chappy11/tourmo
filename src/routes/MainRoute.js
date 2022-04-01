@@ -7,6 +7,9 @@ import Register from '../screen/Register';
 import Home from '../screen/Home';
 import ViewMotor from '../screen/ViewMotor'
 import CreateTransaction from '../screen/CreateTransaction';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Notification from '../screen/Notification';
+import Profile from '../screen/user/Profile';
 const MainStack = createNativeStackNavigator();
 
 export const MainRoute = () => (
@@ -27,15 +30,47 @@ export const UnauthRoute = () => (
     </UnAuthStack.Navigator>
 )
 
-const AuthStack = createNativeStackNavigator();
+
+const AuthRouteTab = createBottomTabNavigator();
 
 export const AuthRoute = () => (
+    <AuthRouteTab.Navigator screenOptions={{headerShown:false}}>
+        <AuthRouteTab.Screen name="HomeRoute" component={HomeRoute} options={{tabBarLabel:"Home"}}/>
+         <AuthRouteTab.Screen name="UserRoute" component={UserRoute} options={{tabBarLabel:"Profile"}}/>
+        <AuthRouteTab.Screen name="NotificationRoute" component={NotificationRoute} options={{ tabBarLabel: "Notification" }} />
+    </AuthRouteTab.Navigator>
+)
+
+
+
+
+//home route from tab
+const AuthStack = createNativeStackNavigator();
+
+export const HomeRoute = () => (
     <AuthStack.Navigator screenOptions={{headerShown:false}}>
         <AuthStack.Screen name="Home" component={Home} />
         <AuthStack.Screen name="View Motor" component={ViewMotor} />
         <AuthStack.Screen name="Create Transaction" component={CreateTransaction}/>
     </AuthStack.Navigator>
 );
+    
 
+//notification route from tab
+const NotificationStack = createNativeStackNavigator();
+
+export const NotificationRoute = () => (
+    <NotificationStack.Navigator>
+        <NotificationStack.Screen name="notification" component={Notification}/>
+    </NotificationStack.Navigator>
+);
+
+
+const UserStack = createNativeStackNavigator();
+export const UserRoute = () => (
+    <UserStack.Navigator>
+        <UserStack.Screen name="Profile" component={Profile}/>
+    </UserStack.Navigator>
+);
 
 
