@@ -1,9 +1,15 @@
 import axios from 'axios'
 
-const ip = "http://192.168.1.2/tourmo/";
+export const ip = "http://192.168.1.17/tourmo/";
 
 
 export  default {
+    sendEmail: async payload =>{
+        const headers = {
+            "Content-Type" : "text/plain"
+        }
+        return axios.post(ip+"email/sendEmail",payload,{headers});
+    },
     login:async (payload) =>{
         const headers = {
             "Content-Type" : "text/plain"

@@ -5,10 +5,12 @@ import MapView from 'react-native-maps'
 import { motors } from '../../data/motor'
 import { Color } from '../utils/Themes'
 import { Headline, Title } from 'react-native-paper'
+import { Button } from '../components/Button'
+import { AuthContext } from '../context/Context'
 
 
 const Home = ({navigation}) => {
-  
+  const {signOut} = React.useContext(AuthContext);
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => navigation.navigate('View Motor', {item})}>
     <View style={style.itemContainer}>
@@ -27,8 +29,9 @@ const Home = ({navigation}) => {
 
   return (
       <Screen style={{backgroundColor:'whitesmoke'}}>
-      <View style={{height:80,backgroundColor:Color.primary,justifyContent:'center'}}>
+      <View style={{height:80,backgroundColor:Color.primary,justifyContent:'center',flexDirection:'row'}}>
         <Headline style={{marginLeft:20,fontWeight:'bold'}}>Tourmo</Headline>
+      
       </View>
       <FlatList
         data={motors}

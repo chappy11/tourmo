@@ -10,14 +10,16 @@ import CreateTransaction from '../screen/CreateTransaction';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Notification from '../screen/Notification';
 import Profile from '../screen/user/Profile';
+import Dashboard from '../screen/Dashboard';
+import Vehicle from '../screen/dashboard/Vehicle';
 const MainStack = createNativeStackNavigator();
 
-export const MainRoute = () => (
-    <MainStack.Navigator>
-        <MainStack.Screen name="UnAuthRoute" options={{headerShown:false}} component={UnauthRoute}/>
-        <MainStack.Screen name="Auth" options={{headerShown:false}} component={AuthRoute}/>
-    </MainStack.Navigator>
-)
+// export const MainRoute = () => (
+//     <MainStack.Navigator>
+//         <MainStack.Screen name="UnAuthRoute" options={{headerShown:false}} component={UnauthRoute}/>
+//         <MainStack.Screen name="Auth" options={{headerShown:false}} component={AuthRoute}/>
+//     </MainStack.Navigator>
+// )
 
 
 const UnAuthStack = createNativeStackNavigator();
@@ -37,11 +39,20 @@ export const AuthRoute = () => (
     <AuthRouteTab.Navigator screenOptions={{headerShown:false}}>
         <AuthRouteTab.Screen name="HomeRoute" component={HomeRoute} options={{tabBarLabel:"Home"}}/>
          <AuthRouteTab.Screen name="UserRoute" component={UserRoute} options={{tabBarLabel:"Profile"}}/>
+        <AuthRouteTab.Screen name="DashboardRoute" component={DashboardRoute} options={{tabBarLabel:"Dashboard"}}/>
         <AuthRouteTab.Screen name="NotificationRoute" component={NotificationRoute} options={{ tabBarLabel: "Notification" }} />
     </AuthRouteTab.Navigator>
 )
 
 
+const DashBoardRouteStack = createNativeStackNavigator();
+
+export const DashboardRoute = () =>(
+    <DashBoardRouteStack.Navigator>
+        <DashBoardRouteStack.Screen name="Dashboard" component={Dashboard}/>
+        <DashBoardRouteStack.Screen name="Vehicle" component={Vehicle}/>
+    </DashBoardRouteStack.Navigator>
+)
 
 
 //home route from tab

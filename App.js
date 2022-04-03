@@ -6,19 +6,82 @@
  * @flow strict-local
  */
 import { NavigationContainer } from '@react-navigation/native';
-import React from 'react';
+import React,{useEffect,useState,useMemo} from 'react';
 import MapView,{Marker} from 'react-native-maps';
 import { StyleSheet,View } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { MainRoute } from './src/routes/MainRoute';
+import { AuthRoute, MainRoute, UnauthRoute } from './src/routes/MainRoute';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext, UserContext } from './src/context/Context';
+import Loading from './src/screen/Loading';
+
+
 const App = () => {
+  const [isload, setisload] = useState(true);
+  const [id, setid] = useState(null);
+  const [data,setdata] = useState(null);
+  const [email, setemail] = useState("");
+  const authContext = useMemo(
+    () => ({
+      signIn: (id,data) => {
+        AsyncStorage.setItem("id", id);
+        AsyncStorage.setItem("data",JSON.stringify(data))
+        setisload(false);
+        setid(id);
+        setdata(data);
+      },
+      signUp: email => {
+        setemail(email);
+      },
+      signOut: () => {
+        setid(null);
+         setisload(false);
+        AsyncStorage.clear();
+      },
+      data:data,
+    }),
+    [],
+  );
  
-  
+  useEffect(() => {
+    AsyncStorage.getItem("id")
+      .then(res => {
+        setid(res);
+        // eslint-disable-next-line handle-callback-err
+      })
+      .catch(err => {
+        setid(null);
+      });
+      AsyncStorage.getItem("data")
+      .then(res=>{
+        setdata(JSON.parse(res));
+      }).catch(res=>{
+        setdata(null);
+      })
+      console.log(id);
+    setTimeout(() => {
+      setisload(false);
+    }, 5000);
+  }, []);
+  if (isload) {
+    return <Loading/>;
+  }
+
   return (
       <PaperProvider>
+          <AuthContext.Provider value={authContext}>
        <NavigationContainer>
-        <MainRoute/>
+         {id === null ?
+            <UnauthRoute/>
+          :(
+            <UserContext.Provider value={{id,data}}>
+                <AuthRoute/>
+            </UserContext.Provider>
+          )
+            
+          }
     </NavigationContainer>
+    </AuthContext.Provider>
     </PaperProvider>
   );
 };

@@ -8,10 +8,11 @@ import Screen from '../components/Screen';
 import { Headline } from 'react-native-paper';
 import { TextInput } from '../components/TextInput';
 import API from '../endpoints/API';
+import { AuthContext } from '../context/Context';
 
 
 const Login = ({navigation}) => {
-  
+    const {signIn} = React.useContext(AuthContext)
     const [input,setinput] = useState({
         email:"",
         password:""
@@ -33,9 +34,11 @@ const Login = ({navigation}) => {
             API.login(payload).then(res=>{
               
                 console.log(res.data);
-                const {message,status} = res.data;
+                const {message,status,data} = res.data;
                 if(status == 1){
                     ToastAndroid.show(message,ToastAndroid.LONG);
+                    signIn(data[0].user_id,data[0])
+                
                 }else{
                     ToastAndroid.show("Wrong Credential",ToastAndroid.LONG)
                 }
