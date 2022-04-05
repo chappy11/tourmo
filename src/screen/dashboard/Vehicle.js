@@ -4,12 +4,12 @@ import { Title } from 'react-native-paper';
 import { Button } from '../../components/Button';
 import { Color } from '../../utils/Themes';
 
-const Vehicle  = () =>{
+const Vehicle  = ({navigation}) =>{
     return( 
         <View style={{flex:1}}>
             <View style={style.card}>
                     <Title>Motorista</Title>
-                    <Button name="Become Motorista" mode='contained' color={Color.primary}/>
+                <Button name="Become Motorista" mode='contained' onPress={()=>navigation.navigate("Create Motourista")} color={Color.primary}/>
             </View>
             
         </View>

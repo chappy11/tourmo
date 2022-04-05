@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const ip = "http://192.168.1.17/tourmo/";
+export const ip = "http://10.0.8.42/tourmo/";
 
 
 export  default {

@@ -12,6 +12,7 @@ import Notification from '../screen/Notification';
 import Profile from '../screen/user/Profile';
 import Dashboard from '../screen/Dashboard';
 import Vehicle from '../screen/dashboard/Vehicle';
+import CreateMoutorista from '../screen/moutorista/CreateMoutorista';
 const MainStack = createNativeStackNavigator();
 
 // export const MainRoute = () => (
@@ -48,10 +49,19 @@ export const AuthRoute = () => (
 const DashBoardRouteStack = createNativeStackNavigator();
 
 export const DashboardRoute = () =>(
-    <DashBoardRouteStack.Navigator>
+    <DashBoardRouteStack.Navigator screenOptions={{headerShown:false}}>
         <DashBoardRouteStack.Screen name="Dashboard" component={Dashboard}/>
-        <DashBoardRouteStack.Screen name="Vehicle" component={Vehicle}/>
+        <DashBoardRouteStack.Screen name="VehicleRoute" component={VehicleRoute}/>
     </DashBoardRouteStack.Navigator>
+)
+
+
+const VehicleStack = createNativeStackNavigator();
+export const VehicleRoute = () => (
+    <VehicleStack.Navigator>
+        <VehicleStack.Screen name="Vehicle" component={Vehicle} />
+        <VehicleStack.Screen name="Create Motourista" component={CreateMoutorista}/>
+    </VehicleStack.Navigator>
 )
 
 
