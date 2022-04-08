@@ -8,7 +8,9 @@ import { Button } from '../components/Button'
 
 const ViewMotor = ({navigation,route}) => {
     const data = route.params.item
+    
     console.log(route.params);
+    
     return (
       <Screen style={{backgroundColor:'whitesmoke'}}>
             <ScrollView style={{ flex: 1 }}>
@@ -39,7 +41,6 @@ const ViewMotor = ({navigation,route}) => {
                     >
                         <Marker
                             coordinate={{ latitude: data.coordinate.lat, longitude: data.coordinate.lng }}
-                            
                         />
                        
                     </MapView>

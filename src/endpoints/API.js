@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Moutorista from './Moutorista';
 
 export const ip = "http://10.0.8.42/tourmo/";
 
@@ -22,5 +23,6 @@ export  default {
             "Content-Type":"multipart/form-data"
         }
      return axios.post(ip+"user/register",payload,{headers});
-     }
+    },
+     ...Moutorista
 }
