@@ -1,7 +1,7 @@
-import React,{useState,useContext} from 'react'
+import React,{useState,useContext,useEffect} from 'react'
 import { StyleSheet,View,Text,ImageBackground} from 'react-native';
 import Swiper from "react-native-swiper";
-import {Title} from 'react-native-paper'
+import {Caption, Title} from 'react-native-paper'
 import { Button } from '../../components/Button';
 import Screen from '../../components/Screen';
 import { TextInput } from '../../components/TextInput';
@@ -11,20 +11,30 @@ import { white } from 'react-native-paper/lib/typescript/styles/colors';
 import MapView,{Marker} from 'react-native-maps';
 import API from '../../endpoints/API';
 import { UserContext } from '../../context/Context';
+import Geolocation from '@react-native-community/geolocation';
 
-
-
+const INITIAL_REGION = {
+  latitude: 10.3157,
+  longitude: 123.8854,
+  latitudeDelta: 4.136923536294034,
+  longitudeDelta: 5.68705391138792,
+}
 const CreateMoutorista = () => {
+    const mapRef = React.useRef(null)
     const [isView, setisView] = React.useState(true);
     const [input, setinput] = useState({
         name:""
     })
     const { data } = useContext(UserContext);
     const [accept, setaccept] = React.useState(false);
-    const [coordinate, setcoordinate] = useState({
-        latitude: 10.3157,
-        longitude: 123.8854
-    })
+    const [coordinate, setcoordinate] = useState(null)
+
+    const [region, setregion] = React.useState(INITIAL_REGION)
+
+    useEffect(() => {
+        Geolocation.getCurrentPosition(info => setcoordinate({ latitude: info.coords.latitude, longitude: info.coords.longitude }));
+        setregion(INITIAL_REGION)
+    },[]);
 
     const onChange = (name, val) => {
         setinput({...input,[name]:val})
@@ -34,6 +44,9 @@ const CreateMoutorista = () => {
         setcoordinate({...newCoords})
     }
 
+    const onRegionChange = (region)=>{
+        setregion(region)
+    }
     const submit = async() => {
         let payload = {
             user_id: data.user_id,
@@ -42,6 +55,8 @@ const CreateMoutorista = () => {
             lng:coordinate.longitude
         }
         let res = await API.addMotourista(payload);
+
+        console.log(res);
     }
 
     console.log("New Chords",coordinate)
@@ -51,7 +66,7 @@ const CreateMoutorista = () => {
                 <Slide onPress={() => setisView(false)} accept={accept} setaccept={setaccept}/>
             ): (
                 <View style={{flex:1,backgroundColor:Color.white}}>
-                        <CreateMotourista coordinate={coordinate} markPosition={markPosition} submit={submit}/>
+                        <CreateMotourista region={region} onRegionChange={onRegionChange} setregion={setregion} onChange={onChange} coordinate={coordinate} markPosition={markPosition} submit={submit}/>
                 </View>
             )}
             
@@ -83,18 +98,20 @@ const style = StyleSheet.create({
     }
 })
 
-export const CreateMotourista = ({coordinate,markPosition}) => {
+export const CreateMotourista = ({coordinate,onChangeRegion,markPosition,submit,onChange,setregion,region}) => {
+    console.log("REGION",region)
     return (
         <>
-            <TextInput placeholder="Enter your brand name" />
+            <View style={{paddingHorizontal:10,paddingVertical:15}}>
+                    <Caption>Name of Brand</Caption>
+                <TextInput placeholder="Enter your brand name" onChange={(e)=>onChange("name",e)}/>
+            </View>
             <MapView
-                region={{
-                    latitude:coordinate.latitude,
-                    longitude:coordinate.longitude,
-                   latitudeDelta: 0.0922,
-                   longitudeDelta: 0.0421,
-                }}
-                style={{flex:1}}
+                region={region}
+                style={{ flex: 1 }}
+                onRegionChange={onChangeRegion}
+               
+                
             >
                 <Marker
                     draggable
@@ -103,7 +120,10 @@ export const CreateMotourista = ({coordinate,markPosition}) => {
                 />
 
             </MapView>
-            <Button name="Create" mode='contained' />
+            <View style={{paddingHorizontal:15,paddingVertical:10}}>
+                      <Button name="Create" mode='contained' color={Color.primary}/>
+            </View>
+          
         </>
         )
 }
