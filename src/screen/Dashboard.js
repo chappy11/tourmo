@@ -25,7 +25,7 @@ const Dashboard = ({navigation}) =>{
             numColumns={3}
             keyExtractor={(val,i)=>i.toString()}
             />
-            </View>
+   </View>
         
     );
 }

@@ -1,5 +1,5 @@
 import React,{useState,useContext,useEffect} from 'react'
-import { StyleSheet,View,Text,ImageBackground} from 'react-native';
+import { StyleSheet,View,Text,ImageBackground,Alert} from 'react-native';
 import Swiper from "react-native-swiper";
 import {Caption, Title} from 'react-native-paper'
 import { Button } from '../../components/Button';
@@ -12,28 +12,32 @@ import MapView,{Marker} from 'react-native-maps';
 import API from '../../endpoints/API';
 import { UserContext } from '../../context/Context';
 import Geolocation from '@react-native-community/geolocation';
+import { NavigationContainer } from '@react-navigation/native';
 
 const INITIAL_REGION = {
   latitude: 10.3157,
   longitude: 123.8854,
-  latitudeDelta: 4.136923536294034,
-  longitudeDelta: 5.68705391138792,
+  latitudeDelta: 0.0006294034,
+  longitudeDelta: 0.000138792,
 }
-const CreateMoutorista = () => {
+const CreateMoutorista = ({navigation,route}) => {
     const mapRef = React.useRef(null)
     const [isView, setisView] = React.useState(true);
     const [input, setinput] = useState({
         name:""
     })
-    const { data } = useContext(UserContext);
+    const { user } = useContext(UserContext);
     const [accept, setaccept] = React.useState(false);
     const [coordinate, setcoordinate] = useState(null)
 
     const [region, setregion] = React.useState(INITIAL_REGION)
 
     useEffect(() => {
-        Geolocation.getCurrentPosition(info => setcoordinate({ latitude: info.coords.latitude, longitude: info.coords.longitude }));
-        setregion(INITIAL_REGION)
+        Geolocation.getCurrentPosition(info => {
+            setcoordinate({ latitude: info.coords.latitude, longitude: info.coords.longitude })
+            setregion({...region,latitude:info.coords.latitude,longitude:info.coords.longitude})
+        });
+        
     },[]);
 
     const onChange = (name, val) => {
@@ -45,21 +49,41 @@ const CreateMoutorista = () => {
     }
 
     const onRegionChange = (region)=>{
+        if(region===null){
+            return {...INITIAL_REGION,...coordinate}
+        }
         setregion(region)
     }
     const submit = async() => {
-        let payload = {
-            user_id: data.user_id,
-            name: input.name,
-            lat: coordinate.latitude,
-            lng:coordinate.longitude
-        }
-        let res = await API.addMotourista(payload);
-
-        console.log(res);
+        if (input.name === "") {
+            Alert.alert("Error", "Fill out all Fields",[{text:"Okay"}]);
+        } else {
+                let payload = {
+                    user_id: user.user_id,
+                    name: input.name,
+                    lat: coordinate.latitude,
+                    lng:coordinate.longitude
+                }
+                let res = await API.addMotourista(payload);
+                console.log(res.data)
+                if (res.data.status == 1) {
+                    Alert.alert(
+                        "Success",
+                        res.data.message,
+                        [{
+                            text: "Okay",
+                            onPress:()=>navigation.push("Vehicle")
+                        }]
+                    );
+                } else {
+                    Alert.alert("Error",res.data.message,[{text:"Okay"}])
+                }
+                
+         }
+        
     }
 
-    console.log("New Chords",coordinate)
+    
     return (
         <Screen>
             {isView ? (
@@ -104,24 +128,27 @@ export const CreateMotourista = ({coordinate,onChangeRegion,markPosition,submit,
         <>
             <View style={{paddingHorizontal:10,paddingVertical:15}}>
                     <Caption>Name of Brand</Caption>
-                <TextInput placeholder="Enter your brand name" onChange={(e)=>onChange("name",e)}/>
+                <TextInput placeholder="Enter your brand name" onChangeText={(e)=>onChange("name",e)}/>
             </View>
             <MapView
                 region={region}
                 style={{ flex: 1 }}
-                onRegionChange={onChangeRegion}
+                onRegionChangeComplete={onChangeRegion}
                
                 
             >
                 <Marker
                     draggable
                     coordinate={coordinate}
-                    onDragEnd={(e)=>markPosition(e.nativeEvent.coordinate)}
+                    onDragEnd={(e) => {
+                        markPosition(e.nativeEvent.coordinate)
+                        setregion({...region,...e.nativeEvent.coordinate})
+                    }}
                 />
 
             </MapView>
             <View style={{paddingHorizontal:15,paddingVertical:10}}>
-                      <Button name="Create" mode='contained' color={Color.primary}/>
+                <Button name="Create" mode='contained' onPress={submit} color={Color.primary}/>
             </View>
           
         </>

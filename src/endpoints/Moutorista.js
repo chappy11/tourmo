@@ -9,5 +9,10 @@ export default {
         }
         let data = await  Axios.post(ip + "motourista/becomeMotourista", payload, { headers });
         return data;
+    },
+    getmotouristabyuser: async (user_id) => {
+        let data = await Axios.get(ip + "motourista/getmotouristabyuser/" + user_id);
+        console.log("Motourista", data.data);
+        return data.data;
     }
 }

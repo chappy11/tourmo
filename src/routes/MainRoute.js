@@ -13,6 +13,7 @@ import Profile from '../screen/user/Profile';
 import Dashboard from '../screen/Dashboard';
 import Vehicle from '../screen/dashboard/Vehicle';
 import CreateMoutorista from '../screen/moutorista/CreateMoutorista';
+import AddVehicle from '../screen/vehicle/AddVehicle';
 const MainStack = createNativeStackNavigator();
 
 // export const MainRoute = () => (
@@ -60,7 +61,8 @@ const VehicleStack = createNativeStackNavigator();
 export const VehicleRoute = () => (
     <VehicleStack.Navigator>
         <VehicleStack.Screen name="Vehicle" component={Vehicle} />
-        <VehicleStack.Screen name="Create Motourista" component={CreateMoutorista}/>
+        <VehicleStack.Screen name="Create Motourista" component={CreateMoutorista} />
+        <VehicleStack.Screen name="Add Motor" component={AddVehicle}/>
     </VehicleStack.Navigator>
 )
 

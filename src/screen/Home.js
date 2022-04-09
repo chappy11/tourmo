@@ -1,4 +1,4 @@
-import { View, Text,FlatList, StyleSheet,Image,TouchableOpacity } from 'react-native'
+import { View, Text,FlatList,SafeAreaView,ScrollView,RefreshControl,StyleSheet,Image,TouchableOpacity } from 'react-native'
 import React from 'react'
 import Screen from '../components/Screen'
 import MapView from 'react-native-maps'
@@ -7,13 +7,17 @@ import { Color } from '../utils/Themes'
 import { Headline, Title } from 'react-native-paper'
 import { Button } from '../components/Button'
 import { AuthContext } from '../context/Context'
+import RNscreen from '../components/RNscreen'
 
 
-const Home = ({navigation}) => {
-  const {signOut} = React.useContext(AuthContext);
+const Home = ({ navigation }) => {
+ 
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => navigation.navigate('View Motor', {item})}>
     <View style={style.itemContainer}>
+      <View styl>
+          
+      </View>
       <View >
         <Image source={item.motorImg} style={{width:'100%',height:200}}/>
       </View>
@@ -28,22 +32,24 @@ const Home = ({navigation}) => {
 
 
   return (
-      <Screen style={{backgroundColor:'whitesmoke'}}>
+
+  
+   <RNscreen>
       <View style={{height:80,backgroundColor:Color.primary,justifyContent:'center',flexDirection:'row'}}>
-        <Headline style={{marginLeft:20,fontWeight:'bold'}}>Tourmo</Headline>
-      
+        <Title>Tourmo</Title>
       </View>
       <FlatList
         data={motors}
         style={{flex:1,}}
         keyExtractor={(val,i)=>i.toString()}
         renderItem={renderItem}
-      />
-       </Screen>
+       />
+     </RNscreen>
   )
 }
 
 export default Home;
+
 
 const style = StyleSheet.create({
   itemContainer: {
@@ -51,7 +57,7 @@ const style = StyleSheet.create({
     backgroundColor: 'white',
     marginHorizontal: 15,
     marginVertical: 5,
-    borderRadius:20,
+    borderRadius:5,
   },
   motorImage: {
     width: '100%',

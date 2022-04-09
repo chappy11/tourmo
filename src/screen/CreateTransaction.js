@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React,{useState} from 'react'
-import Screen from '../components/Screen'
+import RNscreen from '../components/RNscreen'
 import { Dialog, Headline, Modal, Portal } from 'react-native-paper'
 import { TextInput } from '../components/TextInput'
 import { Button } from '../components/Button'
@@ -32,7 +32,7 @@ const CreateTransaction = ({route}) => {
     
     return (
         <Portal>
-        <Screen style={{ backgroundColor: 'lightgray' }}>
+          <RNscreen>
  
           <View style={style.container}>
               <Headline>Set Up Payment</Headline>
@@ -60,7 +60,7 @@ const CreateTransaction = ({route}) => {
               <Button color={Color.secondary} mode='contained' name="Pay It now"/>
          </View>
                
-            </Screen>
+          </RNscreen>
         </Portal>
   )
 }

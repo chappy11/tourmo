@@ -1,44 +1,46 @@
-import { View, Text,StyleSheet } from 'react-native'
-import React from 'react'
-import { ActivityIndicator, Paragraph } from 'react-native-paper'
+import React from 'react';
+import { RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text } from 'react-native';
+import { Color } from '../utils/Themes';
 
-const Screen = (props,{children}) => {
-  
-    return (
-        <>
-        {
-                props.isLoad ? (
-                    <Load />
-                ): (
-                        <View  style={{...style.container,...props.style}}>
-                            {props.children}
-                        </View>                    
-            )
-        
-        }
-    
-        </>
- )
+const wait = (timeout) => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-export default Screen
+const Screen = (props) => {
+  const [refreshing, setRefreshing] = React.useState(false);
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
 
-export const Load = () => (
-    <View style={style.loadingContainer}>
-        <ActivityIndicator size={50} />
-        <Paragraph>Loading...</Paragraph>
-    </View>
-)
-
-const style = StyleSheet.create({
-    loadingContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems:'center'
-    },
-    container: {
-        flex: 1,
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.scrollView}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+          >
         
-    }
-})
+        {props.children}
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+    backgroundColor: Color.primary,
+   
+  },
+});
+
+export default Screen;

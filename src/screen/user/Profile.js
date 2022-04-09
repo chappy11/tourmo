@@ -6,30 +6,30 @@ import { ip } from '../../endpoints/API';
 import { Headline, Title } from 'react-native-paper';
 import { Button } from '../../components/Button';
 import { Color } from '../../utils/Themes';
-
+import RNscreen from '../../components/RNscreen';
 const Profile = () => {
-  const {data} = React.useContext(UserContext);
+  const {user} = React.useContext(UserContext);
   const {signOut} = React.useContext(AuthContext)
-  console.log("Data",data);
+  console.log("Data",user);
   return (
-    <Screen>
+    <RNscreen> 
       <ScrollView style={style.container} >
           <View style={{...style.card,display:'flex',justifyContent:'center',alignItems:'center'}}>
-              <Image source={{uri:ip+data.user_pic}} style={style.image} resizeMode='contain'/>
-              <Title>{data.firstname+" "+data.middlename+" "+data.lastname}</Title>
-              <Text>{data.email}</Text>
-              <Text>{data.contact}</Text>
+              <Image source={{uri:ip+user.user_pic}} style={style.image} resizeMode='contain'/>
+              <Title>{user.firstname+" "+user.middlename+" "+user.lastname}</Title>
+              <Text>{user.email}</Text>
+              <Text>{user.contact}</Text>
           </View>
           <View style={style.card}>
             <Title>License picture</Title>
-              <Image source={{uri:ip+data.license_pic}} style={{width:300,height:300}}/>
+              <Image source={{uri:ip+user.license_pic}} style={{width:300,height:300}}/>
           </View>
           <View style={style.card}>
               <Button name="Logout" mode='outlined' color={Color.danger} onPress={signOut}/>
           </View>
       </ScrollView>
-      
-    </Screen>
+    </RNscreen>
+   
   )
 }
 

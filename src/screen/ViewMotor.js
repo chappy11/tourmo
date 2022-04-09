@@ -5,6 +5,7 @@ import { Color } from '../utils/Themes'
 import { Headline, Title } from 'react-native-paper'
 import MapView, { Marker } from 'react-native-maps'
 import { Button } from '../components/Button'
+import RNscreen from '../components/RNscreen'
 
 const ViewMotor = ({navigation,route}) => {
     const data = route.params.item
@@ -12,8 +13,8 @@ const ViewMotor = ({navigation,route}) => {
     console.log(route.params);
     
     return (
-      <Screen style={{backgroundColor:'whitesmoke'}}>
-            <ScrollView style={{ flex: 1 }}>
+        <RNscreen>
+         <ScrollView style={{flex:1}}>
                 <View style={style.container}>
                       <Image source={data.motorImg} style={{width:'100%',height:200}} />
                         <View style={style.textContainer}>
@@ -48,8 +49,9 @@ const ViewMotor = ({navigation,route}) => {
                 <View style={style.container}>
                     <Button name="Rent this Vehicle" color={Color.primary} mode='contained' onPress={()=>navigation.navigate('Create Transaction',{rate:data.rate})}/>
                 </View>
-      </ScrollView>
-    </Screen>
+ 
+        </ScrollView>
+    </RNscreen>
   )
 }
 

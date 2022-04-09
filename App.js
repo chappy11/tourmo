@@ -19,16 +19,16 @@ import Loading from './src/screen/Loading';
 const App = () => {
   const [isload, setisload] = useState(true);
   const [id, setid] = useState(null);
-  const [data,setdata] = useState(null);
+  const [user,setuser] = useState(null);
   const [email, setemail] = useState("");
   const authContext = useMemo(
     () => ({
       signIn: (id,data) => {
         AsyncStorage.setItem("id", id);
-        AsyncStorage.setItem("data",JSON.stringify(data))
+        AsyncStorage.setItem("user",JSON.stringify(data))
         setisload(false);
         setid(id);
-        setdata(data);
+        setuser(data);
       },
       signUp: email => {
         setemail(email);
@@ -38,7 +38,7 @@ const App = () => {
          setisload(false);
         AsyncStorage.clear();
       },
-      data:data,
+     
     }),
     [],
   );
@@ -52,11 +52,11 @@ const App = () => {
       .catch(err => {
         setid(null);
       });
-      AsyncStorage.getItem("data")
+      AsyncStorage.getItem("user")
       .then(res=>{
-        setdata(JSON.parse(res));
+        setuser(JSON.parse(res));
       }).catch(res=>{
-        setdata(null);
+        setuser(null);
       })
       console.log(id);
     setTimeout(() => {
@@ -74,7 +74,7 @@ const App = () => {
          {id === null ?
             <UnauthRoute/>
           :(
-            <UserContext.Provider value={{id,data}}>
+            <UserContext.Provider value={{id,user}}>
                 <AuthRoute/>
             </UserContext.Provider>
           )
