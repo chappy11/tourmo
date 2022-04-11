@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Moutorista from './Moutorista';
+import Vehicle from './Vehicle';
 
 export const ip = "http://10.0.8.42/tourmo/";
 
@@ -24,5 +25,6 @@ export  default {
         }
      return axios.post(ip+"user/register",payload,{headers});
     },
-     ...Moutorista
+    ...Moutorista,
+     ...Vehicle
 }

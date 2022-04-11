@@ -1,11 +1,12 @@
 import { Picker } from '@react-native-picker/picker';
 import React from 'react'
-import {View,StyleSheet,ImageBackground,Text,ScrollView,TouchableOpacity} from 'react-native'
+import {View,StyleSheet,ImageBackground,Text,ScrollView,TouchableOpacity,FlatList} from 'react-native'
 import ImagePicker from 'react-native-image-crop-picker';
-import { Caption } from 'react-native-paper';
+import { Button, Caption, Title } from 'react-native-paper';
+import { TextInput } from 'react-native-paper';
 import RNscreen from '../../components/RNscreen';
 import Screen from '../../components/Screen';
-
+import API from '../../endpoints/API';
 const AddVehicle = ({ navigation, route }) => {
     const [data, setdata] = React.useState({
         pic1: "",
@@ -17,6 +18,7 @@ const AddVehicle = ({ navigation, route }) => {
         or: "",
         cr:""
     });
+    const [isSelect, setisSelect] = React.useState(false);
 
     const onChange = (name,value) => {
         setdata({...data,[name]:value})
@@ -75,7 +77,15 @@ const AddVehicle = ({ navigation, route }) => {
     console.log(route.params.m_id)
     return (
         <RNscreen style={{backgroundColor:'white'}}>
-            <ScrollView style={{ flex: 1 }}>
+            {isSelect ?
+                (
+                    <>
+                    <Choose/>
+                    </>
+                )
+                :
+                    (
+                <ScrollView style = {{ flex: 1 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <TouchableOpacity>
                             <ImageBackground source={{uri:data.pic1}} style={style.imagebackground}>
@@ -95,42 +105,9 @@ const AddVehicle = ({ navigation, route }) => {
                         </ImageBackground>
                     </TouchableOpacity>
                 </View>
-                <View style={style.pickerContainer}>
-                    <Caption>Motor brand</Caption>
-                    <Picker
-                        style={style.pickerStyle}
-                        selectedValue={data.brand}
-                        onValueChange={(val,i)=>onChange("brand",val)}
-                    >
-                        <Picker.Item label='Please choose' />
-                        <Picker.Item label="Suzuki" value="Suzuki" />
-                        <Picker.Item label="Yamaha" value="Yamaha" />
-                        <Picker.Item label='Kawasaki' value='Kawasaki'/>
-                    </Picker>
-                </View>
-                 <View style={style.pickerContainer}>
-                    <Caption>Model Name</Caption>
-                    <Picker
-                        style={style.pickerStyle}
-                        selectedValue={data.name}
-                        onValueChange={(val,i)=>onChange("name",val)}
-                    >
-                        <Picker.Item label='Please choose' />
-                        <Picker.Item label="MIO 125" value="MIO 125" />
-                        <Picker.Item label="Click 150" value="Click 150" />
-                        <Picker.Item label='Raider 150' value='Raider 150'/>
-                    </Picker>
-                </View>
-                 <View style={style.pickerContainer}>
-                    <Caption>Transmission</Caption>
-                    <Picker
-                        style={style.pickerStyle}
-                        onValueChange={(val,i)=>onChange("transmission",val)}
-                    >
-                        <Picker.Item label='Please choose' />
-                        <Picker.Item label="AT" value="AT" />
-                        <Picker.Item label='MT' value='MT'/>
-                    </Picker>
+                <View style={{ flexDirection:'row'}}>
+                    <Text>Motorcycle :</Text>
+                    <Button onPress={()=>setisSelect(true)}>SEARCH</Button>    
                 </View>
                 <View style={{flexDirection:'row',justifyContent:'center'}}>
                     <TouchableOpacity>
@@ -147,7 +124,10 @@ const AddVehicle = ({ navigation, route }) => {
                     </TouchableOpacity>
                     
                 </View>
-            </ScrollView>
+            </ScrollView>)
+            }
+          
+
         </RNscreen>
     );
 }
@@ -170,5 +150,78 @@ const style = StyleSheet.create({
     pickerContainer: {
         paddingHorizontal: 10,
         paddingVertical:5
+    },
+    renderItem: {
+        borderTopWidth: 1.5,
+        borderBottomWidth: 1.5,
+        borderColor: 'whitesmoke',
+        padding:10
+        
     }
 })
+
+
+
+export const Choose = () => {
+    const [list, setlist] = React.useState([]);
+    const [backup, setbackup] = React.useState([]);
+    const [isEmpty, setisEmpty] = React.useState(false);
+    const [search, setsearch] = React.useState("");
+    React.useEffect(() => {
+        getlist();
+      
+    }, [])
+    
+    const getlist = async() => {
+        let res = await API.getlistofmotorcycle();
+        console.log(res.data);
+        if (res.status == 1) {
+            setlist(res.data);
+            setbackup(res.data);
+            setisEmpty(false)
+        } else {
+            setisEmpty(true)
+        }
+    }
+
+    const onChange = (value) => {
+        setsearch(value);
+        filterdata(value)
+    }
+
+    const filterdata = (value) => {
+          if (value== "") {
+            setlist(backup);
+        } else {
+            let data = backup;
+            value = value.toLowerCase();
+            data = data.filter(val => val.name.toLowerCase().match(value));
+            setlist(data);
+        }
+    }
+    
+
+    const renderItem = ({ item }) => (
+        <View style={style.renderItem}>
+            <Title>{item.name}</Title>
+            <Text>{item.brand}</Text>
+            <Text>{item.transmission}</Text>
+        </View>
+    );
+    return (
+        <View style={{flex:1}}>
+            <TextInput style={{backgroundColor:'white',marginHorizontal:15}} placeholder="Search" onChangeText={(e)=>onChange(e)} />
+
+            {isEmpty &&
+                <Text>No Data found</Text>
+            }
+            
+            <FlatList
+                data={list}
+                key={(va, i) => i.toString()}
+                renderItem={renderItem}
+                style={{ flex:1}}
+            />
+        </View>
+    )
+}
