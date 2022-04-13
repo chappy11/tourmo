@@ -2,7 +2,7 @@
 import React from 'react'
 import {View,StyleSheet,ImageBackground,Text,ScrollView,TouchableOpacity,FlatList} from 'react-native'
 import ImagePicker from 'react-native-image-crop-picker';
-import { Button as Rbutton, Caption, Title } from 'react-native-paper';
+import { Button as Rbutton, Caption, Dialog, Menu, Portal, Title } from 'react-native-paper';
 import { TextInput } from 'react-native-paper';
 import RNscreen from '../../components/RNscreen';
 import Screen from '../../components/Screen';
@@ -21,6 +21,7 @@ const AddVehicle = ({ navigation, route }) => {
         cr:""
     });
     const [isSelect, setisSelect] = React.useState(false);
+    const [open, setopen] = React.useState(false);
 
     const onChange = (name,value) => {
         setdata({...data,[name]:value})
@@ -38,64 +39,120 @@ const AddVehicle = ({ navigation, route }) => {
     }
 
 
+    const openMenu = (x,type) => {
+        setopen(true)
+        if (x == "frontImage") {
+            frontImage(type)
+        }
+
+    }
+
 
     const frontImage = (type) => {
         if (type == "picker") {
             ImagePicker.openPicker({
                 width: 300,
                 height: 400,
-                compressImageQuality:0.7
+                compressImageQuality: 0.7
             }).then(res => {
-                onChange("pic1")
+                onChange("pic1",res.path)
             })
         }
-        ImagePicker.openCamera({
-            width: 300,
-            height: 400,
-            compressImageQuality:0.7
-        }).then(res => {
-            onChange("pic1", res.path);
-        })
+        else if (type == "camera") {
+            ImagePicker.openCamera({
+                width: 300,
+                height: 400,
+                compressImageQuality:0.7
+            }).then(res => {
+                onChange("pic1",res.path)
+            })
+        }
     }
+    
+    
 
-    const sideImage = () => {
-        ImagePicker.openCamera({
+    const sideImage = (type) => {
+        if (type == "picker") {
+            ImagePicker.openPicker({
+                width: 300,
+                height: 400,
+                compressImageQuality:0.7
+            }).then(res => {
+                onChange("pic2",res.path)
+            })
+        } else if (type == "camera") {
+            ImagePicker.openCamera({
             width: 300,
             height: 400,
             compressImageQuality:0.7
-        }).then(res => {
-            onChange("pic2",res.path)
-        })
+            }).then(res => {
+                onChange("pic2",res.path)
+            })    
+        }
     }
 
     const backImage = () => {
-        ImagePicker.openCamera({
-            width: 300,
-            height: 400,
-            compressImageQuality: 0.7
-        }).then(res => {
-            onChange("pic3",res.path)
-        })
+        if (type == "picker") {
+            ImagePicker.openPicker({
+                width: 300,
+                height: 400,
+                compressImageQuality:0.7
+            }).then(res => {
+                onChange("pic3",res.path)
+            })
+        } else if (type == "camera") {
+            ImagePicker.openCamera({
+                width: 300,
+                height: 400,
+                compressImageQuality: 0.7
+            }).then(res => {
+                onChange("pic3",res.path)
+            })    
+        }
+        
     }
 
     const orImage = () => {
-        ImagePicker.openCamera({
+        if (type == "picker") {
+            ImagePicker.openPicker({
+                width: 300,
+                height: 400,
+                compressImageQuality:0.7
+            }).then(res => {
+               onChange("or",res.path)
+           })
+        } else if (type == "camera") {
+             ImagePicker.openCamera({
             width: 300,
             height: 400,
             compressImageQuality:0.7
-        }).then(res => {
-            onChange("or",res.path)
-        })
+            }).then(res => {
+                onChange("or",res.path)
+            })    
+        }
+        
     }
 
     const crImage = () => { 
-        ImagePicker.openCamera({
-            width: 300,
-            height: 400,
-            compressImageQuality:0.7
-        }).then(res => {
-            onChange("cr",res.path)
-        })
+
+        if (type == "camera") {
+            ImagePicker.openCamera({
+                width: 300,
+                height: 400,
+                compressImageQuality:0.7
+            }).then(res => {
+                onChange("cr",res.path)
+            })
+        } else if(type == "picker") {
+            ImagePicker.openPicker({
+                width: 300,
+                height: 400,
+                compressImageQuality:0.7
+            }).then(res => { 
+                onChange("cr",res.path)
+            })
+        }
+      
     }
 
   console.log("Inputs",data)
@@ -161,6 +218,12 @@ const AddVehicle = ({ navigation, route }) => {
                     </TouchableOpacity>
                     
                 </View>
+                        <Portal>
+                            <Dialog visible={open} onDismiss={()=>setopen(false)}> 
+                                <Menu.Item title="Camera" />
+                                <Menu.Item title="Picker" />
+                            </Dialog>
+                        </Portal>        
             </ScrollView>)
             }
           
