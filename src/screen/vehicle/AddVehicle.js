@@ -1,15 +1,19 @@
 
 import React from 'react'
-import {View,StyleSheet,ImageBackground,Text,ScrollView,TouchableOpacity,FlatList} from 'react-native'
+import {View,StyleSheet,ImageBackground,Text,ScrollView,TouchableOpacity,FlatList,Alert} from 'react-native'
 import ImagePicker from 'react-native-image-crop-picker';
-import { Button as Rbutton, Caption, Dialog, Menu, Portal, Title } from 'react-native-paper';
+import { Button as Rbutton, Caption, Dialog, Headline, Menu, Portal, Title } from 'react-native-paper';
 import { TextInput } from 'react-native-paper';
 import RNscreen from '../../components/RNscreen';
 import Screen from '../../components/Screen';
 import API from '../../endpoints/API';
 import { Button } from '../../components/Button';
 import { Color } from '../../utils/Themes';
+import Card from '../../components/Card';
+import { Func } from '../../utils/Func';
+import { UserContext } from '../../context/Context';
 const AddVehicle = ({ navigation, route }) => {
+    const {user} = React.useContext(UserContext)
     const [data, setdata] = React.useState({
         pic1: "",
         pic2: "",
@@ -22,10 +26,11 @@ const AddVehicle = ({ navigation, route }) => {
     });
     const [isSelect, setisSelect] = React.useState(false);
     const [open, setopen] = React.useState(false);
-
+    const [selectedimage, setselectedimage] = React.useState("");
     const onChange = (name,value) => {
         setdata({...data,[name]:value})
     }
+    const [isloading, setisloading] = React.useState(false);
 
     const getmotorcycle = (nam,bran,trans) => {
         setdata({
@@ -39,14 +44,26 @@ const AddVehicle = ({ navigation, route }) => {
     }
 
 
-    const openMenu = (x,type) => {
+    const openMenu = (x) => {
         setopen(true)
-        if (x == "frontImage") {
-            frontImage(type)
-        }
-
+        setselectedimage(x);
     }
 
+    const pick = (type) => {
+        if (selectedimage == "frontImage") {
+            frontImage(type)
+        }
+        else if (selectedimage == "sideImage") {
+            sideImage(type)
+        } else if (selectedimage == "backImage") { 
+            backImage(type)
+        } else if (selectedimage == "orImage") {
+            orImage(type)
+        } else if (selectedimage == "crImage") {
+            crImage(type);
+        }
+        setopen(false);
+    }
 
     const frontImage = (type) => {
         if (type == "picker") {
@@ -69,8 +86,6 @@ const AddVehicle = ({ navigation, route }) => {
         }
     }
     
-    
-
     const sideImage = (type) => {
         if (type == "picker") {
             ImagePicker.openPicker({
@@ -91,7 +106,7 @@ const AddVehicle = ({ navigation, route }) => {
         }
     }
 
-    const backImage = () => {
+    const backImage = (type) => {
         if (type == "picker") {
             ImagePicker.openPicker({
                 width: 300,
@@ -112,7 +127,7 @@ const AddVehicle = ({ navigation, route }) => {
         
     }
 
-    const orImage = () => {
+    const orImage = (type) => {
         if (type == "picker") {
             ImagePicker.openPicker({
                 width: 300,
@@ -133,7 +148,7 @@ const AddVehicle = ({ navigation, route }) => {
         
     }
 
-    const crImage = () => { 
+    const crImage = (type) => { 
 
         if (type == "camera") {
             ImagePicker.openCamera({
@@ -155,9 +170,72 @@ const AddVehicle = ({ navigation, route }) => {
       
     }
 
-  console.log("Inputs",data)
+    const submit =  () => {
+        setisloading(true)
+        try {
+            if (data.brand == "" || data.name == "" || data.transmission == "") {
+                Alert.alert("Error","You must indicate the Name,Brand,and Transmission of your Motorcycle")
+                
+            }
+            else if (data.pic1 == "" || data.pic2 == "" || data.pic3 == "") {
+                Alert.alert("Error", "You must put pictures of you motorcycle");
+            }
+            else if (data.or == "" || data.cr == "") {
+                Alert.alert("Error", "You must put put pictures of motorcycle documents");
+            } else {
+                let formdat = new FormData();
+                formdat.append("pic1", {
+                    uri: data.pic1,
+                    type: 'image/png',
+                    name: Func.filename(data.pic1)
+                });
+                formdat.append("pic2", {
+                    uri: data.pic2,
+                    type: 'image/png',
+                    name: Func.filename(data.pic2)
+                });
+                formdat.append("pic3", {
+                    uri: data.pic3,
+                    type: 'image/png',
+                    name: Func.filename(data.pic3)
+                });
+                formdat.append('offRec', {
+                    uri: data.or,
+                    type: 'image/png',
+                    name: Func.filename(data.or)
+                });
+                formdat.append('certReg', {
+                    uri: data.cr,
+                    type: 'image/png',
+                    name:Func.filename(data.cr)
+                })
+                formdat.append("m_id", route.params.m_id);
+                formdat.append("user_id", user.user_id);
+                formdat.append("name", data.name);
+                formdat.append("brand", data.brand);
+                formdat.append("transmission", data.transmission);
+
+                API.insertVehicle(formdat).then(res => {
+                    console.log(res.data)
+                })
+              
+            }
+            
+         
+           
+        } catch (e) {
+            Alert.alert("Error", "Something went wrong", [{
+                text:"Okay",
+                onPress: () => {
+                    
+                }
+            }])
+        }
+        setisloading(false)
+    }
+    console.log("Inputs", data);
     return (
-        <RNscreen style={{backgroundColor:'white'}}>
+        <RNscreen style={{backgroundColor:'whitesmoke'}}>
             {isSelect ?
                 (
                     <>
@@ -167,63 +245,75 @@ const AddVehicle = ({ navigation, route }) => {
                 :
                     (
                 <ScrollView style={{ flex: 1 }}>
-                <View style={{ flexDirection:'row',padding:15,justifyContent:'center',alignItems:'center'}}>
-                    <Text style={{flex:1,fontSize:18,fontWeight:'bold'}}>Motorcycle :</Text>
-                    <Rbutton onPress={()=>setisSelect(true)}>SEARCH</Rbutton>    
-                </View>
-                <View style={style.nameContainer}>
-                    <Caption>Brand</Caption>          
-                    <Text style={{marginLeft:10,fontSize:18}}>{ data.brand}</Text>                
-                </View>
-                <View style={style.nameContainer}>
-                    <Caption>Name</Caption>          
-                    <Text style={{marginLeft:10,fontSize:18}}>{ data.name}</Text>                
-                </View>
-                <View style={style.nameContainer}>
-                    <Caption>Transmission</Caption>          
-                    <Text style={{marginLeft:10,fontSize:18}}>{ data.transmission}</Text>                
-                </View>        
-                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                        <TouchableOpacity onPress={frontImage}>
-                            <ImageBackground source={{uri:data.pic1}} style={style.imagebackground}>
-                                    <Text>Front View</Text>
-                            </ImageBackground>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={sideImage}>
-                            <ImageBackground style={style.imagebackground} source={{uri:data.pic2}}>
-                                    <Text>Side View</Text>
-                            </ImageBackground>
-                        </TouchableOpacity>
-                 </View>
-                <View style={{justifyContent:'center',alignItems:'center'}}>
-                    <TouchableOpacity onPress={backImage}>
-                        <ImageBackground style={style.imagebackground} source={{ uri: data.pic3 }}>
-                            <Text>Back View</Text>
-                        </ImageBackground>
-                    </TouchableOpacity>
-                </View>
-            
-                <View style={{flexDirection:'row',justifyContent:'center'}}>
-                    <TouchableOpacity onPress={orImage}>
-                                <ImageBackground style={style.imagebackground} source={{uri:data.or}}>
-                            <Text>Official Reciept Photo</Text>
-                        </ImageBackground>
-                    </TouchableOpacity>
-                </View>
-                  <View style={{flexDirection:'row',justifyContent:'center'}}>
-                    <TouchableOpacity onPress={crImage}>
-                            <ImageBackground style={style.imagebackground} source={{uri:data.cr}}>
-                                <Text>Certifition of Registration</Text>
-                            </ImageBackground>
-                    </TouchableOpacity>
-                    
-                </View>
-                        <Portal>
-                            <Dialog visible={open} onDismiss={()=>setopen(false)}> 
-                                <Menu.Item title="Camera" />
-                                <Menu.Item title="Picker" />
-                            </Dialog>
-                        </Portal>        
+                     <Card>
+                        <View style={{ flexDirection: 'row', padding: 15, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{flex:1,fontSize:18,fontWeight:'bold'}}>Motorcycle :</Text>
+                            <Rbutton onPress={()=>setisSelect(true)} color={Color.secondary} contentStyle={{color:Color.secondary}}>SEARCH</Rbutton>    
+                        </View>
+                        <View style={style.nameContainer}>
+                            <Caption>Brand</Caption>          
+                            <Text style={{marginLeft:10,fontSize:15,color:"black"}}>{ data.brand}</Text>                
+                        </View>
+                        <View style={style.nameContainer}>
+                            <Caption>Name</Caption>          
+                            <Text style={{marginLeft:10,fontSize:15,color:"black"}}>{ data.name}</Text>                
+                        </View>
+                        <View style={style.nameContainer}>
+                            <Caption>Transmission</Caption>          
+                            <Text style={{marginLeft:10,fontSize:15,marginBottom:20,color:'black'}}>{ data.transmission}</Text>                
+                        </View>        
+                    </Card>
+                    <Card>
+                       <Title style={{padding:10}}>Motorcycle Pictures</Title> 
+                            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                                    <TouchableOpacity onPress={()=>openMenu("frontImage")}>
+                                        <ImageBackground source={{uri:data.pic1}} style={style.imagebackground}>
+                                                <Text>Front View</Text>
+                                        </ImageBackground>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={()=>openMenu("sideImage")}>
+                                        <ImageBackground style={style.imagebackground} source={{uri:data.pic2}}>
+                                                <Text>Side View</Text>
+                                        </ImageBackground>
+                                    </TouchableOpacity>
+                            </View>
+                            <View style={{justifyContent:'center',alignItems:'center'}}>
+                                <TouchableOpacity onPress={()=>openMenu("backImage")}>
+                                    <ImageBackground style={style.imagebackground} source={{ uri: data.pic3 }}>
+                                        <Text>Back View</Text>
+                                    </ImageBackground>
+                                </TouchableOpacity>
+                            </View>
+                    </Card>
+                        
+                    <Card>  
+                        <Title style={{padding:10}}>Motorcycle Documents</Title>        
+                        <View style={{flexDirection:'row',justifyContent:'center'}}>
+                            <TouchableOpacity onPress={()=>openMenu("orImage")}>
+                                        <ImageBackground style={style.imagebackground} source={{uri:data.or}}>
+                                    <Text>Official Reciept Photo</Text>
+                                </ImageBackground>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{flexDirection:'row',justifyContent:'center'}}>
+                            <TouchableOpacity onPress={()=>openMenu("crImage")}>
+                                    <ImageBackground style={style.imagebackground} source={{uri:data.cr}}>
+                                        <Text>Certifition of Registration</Text>
+                                    </ImageBackground>
+                            </TouchableOpacity>
+                            
+                        </View> 
+                    </Card>
+                    <Card>
+                            <Button name="Add" mode='contained' onPress={submit} disabled={isloading ? true : false} color={Color.primary}/>
+                    </Card>                        
+                                      
+                    <Portal>
+                       <Dialog visible={open} onDismiss={()=>setopen(false)}> 
+                            <Menu.Item title="Camera" onPress={()=>pick("camera")}/>
+                            <Menu.Item title="Picker" onPress={()=>pick("picker")}/>
+                        </Dialog>
+                    </Portal>        
             </ScrollView>)
             }
           
@@ -306,11 +396,11 @@ export const Choose = ({getmotorcycle,setisSelect}) => {
 
     const renderItem = ({ item }) => (
     <TouchableOpacity onPress={()=>getmotorcycle(item.name,item.brand,item.transmission)}>
-        <View style={style.renderItem}>
+        <Card style={style.renderItem}>
             <Title>{item.name}</Title>
             <Text>{item.brand}</Text>
             <Text>{item.transmission}</Text>
-        </View>
+        </Card>
     </TouchableOpacity>
     );
     return (
