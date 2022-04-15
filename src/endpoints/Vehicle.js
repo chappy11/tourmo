@@ -12,6 +12,11 @@ export default {
         const headers = {
             "Content-Type" : "multipart/form-data"
         }
-        return axios.post(ip+"Motor/addMotor",formdata,{headers})
+        return axios.post(ip+"vehicle/addMotor",formdata,{headers})
+    },
+    getvehicle: async(m_id) =>{
+        let data = await axios.get(ip + "vehicle/getbymid/"+m_id);
+        console.log("data")
+        return data.data
     }
 }

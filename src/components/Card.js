@@ -12,9 +12,12 @@ const Card = (props) => {
 
 const style = StyleSheet.create({
     card: {
-        marginVertical: 5,
+        marginVertical: 3,
         marginHorizontal: 8,
-        backgroundColor:'white'
+        backgroundColor:'white',
+        borderWidth:1,
+        borderColor:'whitesmoke'
+
     }
 })
 

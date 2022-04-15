@@ -1,6 +1,6 @@
 
 import React from 'react'
-import {View,StyleSheet,ImageBackground,Text,ScrollView,TouchableOpacity,FlatList,Alert} from 'react-native'
+import {View,StyleSheet,ImageBackground,Text,ScrollView,TouchableOpacity,FlatList,Alert,LogBox} from 'react-native'
 import ImagePicker from 'react-native-image-crop-picker';
 import { Button as Rbutton, Caption, Dialog, Headline, Menu, Portal, Title } from 'react-native-paper';
 import { TextInput } from 'react-native-paper';
@@ -30,6 +30,8 @@ const AddVehicle = ({ navigation, route }) => {
     const onChange = (name,value) => {
         setdata({...data,[name]:value})
     }
+
+    LogBox.ignoreAllLogs();
     const [isloading, setisloading] = React.useState(false);
 
     const getmotorcycle = (nam,bran,trans) => {
@@ -216,7 +218,11 @@ const AddVehicle = ({ navigation, route }) => {
                 formdat.append("transmission", data.transmission);
 
                 API.insertVehicle(formdat).then(res => {
-                    console.log(res.data)
+                    if(res.data.status == 1){
+                        Alert.alert("Success",res.data.message,[{text:"Okay",onPress:()=>navigation.push("Vehicle")}])
+                    }
+                }).catch(err=>{
+                    Alert.alert("Error","Something went wrong")
                 })
               
             }
