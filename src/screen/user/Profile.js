@@ -1,30 +1,52 @@
-import { View, Text,StyleSheet, Image,ScrollView } from 'react-native'
-import React from 'react'
+import { View, Text,StyleSheet, Image,ScrollView,Alert } from 'react-native'
+import React, { useEffect } from 'react'
 import { AuthContext, UserContext } from '../../context/Context'
 import Screen from '../../components/Screen';
-import { ip } from '../../endpoints/API';
+import API, { ip } from '../../endpoints/API';
 import { Headline, Title } from 'react-native-paper';
 import { Button } from '../../components/Button';
 import { Color } from '../../utils/Themes';
 import RNscreen from '../../components/RNscreen';
-const Profile = () => {
+import { NavigationContainer } from '@react-navigation/native';
+
+const Profile = ({navigation}) => {
   const {user} = React.useContext(UserContext);
   const {signOut} = React.useContext(AuthContext)
-  console.log("Data",user);
+
+  const [profile, setprofile] = React.useState({});
+
+  useEffect(() => {
+    getuser();
+  },[])
+
+
+  const getuser = async() => {
+    
+      let resp = await API.getprofile(user.user_id);
+      console.log("Profiles",resp.data[0])
+      if (resp.status === 1) {
+        setprofile(resp.data[0]);
+      }
+    // } catch (error) {
+    //     Alert.alert("Error","Something went wrong",0)
+    // }
+  }
+  
   return (
     <RNscreen> 
       <ScrollView style={style.container} >
           <View style={{...style.card,display:'flex',justifyContent:'center',alignItems:'center'}}>
-              <Image source={{uri:ip+user.user_pic}} style={style.image} resizeMode='contain'/>
-              <Title>{user.firstname+" "+user.middlename+" "+user.lastname}</Title>
-              <Text>{user.email}</Text>
-              <Text>{user.contact}</Text>
+              <Image source={{uri:ip+profile.user_pic}} style={style.image} resizeMode='contain'/>
+              <Title>{profile.firstname+" "+profile.middlename+" "+profile.lastname}</Title>
+              <Text>{profile.email}</Text>
+              <Text>{profile.contact}</Text>
           </View>
           <View style={style.card}>
             <Title>License picture</Title>
-              <Image source={{uri:ip+user.license_pic}} style={{width:300,height:300}}/>
+              <Image source={{uri:ip+profile.license_pic}} style={{width:300,height:300}}/>
           </View>
-          <View style={style.card}>
+        <View style={style.card}>
+          <Button name="Update Profile" mode='contained' color={Color.primary} onPress={() => navigation.navigate("Update Profile")}/>
               <Button name="Logout" mode='outlined' color={Color.danger} onPress={signOut}/>
           </View>
       </ScrollView>
