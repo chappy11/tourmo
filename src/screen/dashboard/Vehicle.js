@@ -60,27 +60,38 @@ const Vehicle  = ({navigation,route}) =>{
             <View style={style.card}>
                 {has ?
                     (<>
+
                         <Title>{brand.motour_name ? brand.motour_name : ""}</Title>
                         <Button name="Add Motorcycle" mode='contained' color={Color.secondary} textColor={Color.white} onPress={()=>navigation.navigate("Add Motor",{m_id:brand.m_id})}/>
                     </>)                
                     :
                     (<>
-                         <Title>Motorista</Title>
+                        <Title>Motorista</Title>
+                        <View style={{flex:1,justifyContent:'center'}}>
+                       
                         <Button name="Become Motorista" mode='contained' onPress={()=>navigation.navigate("Create Motourista")} color={Color.primary}/>
+                        </View>
+                        
+    
                     </>)
                 }   
                
             </View>
-            <View style={style.card}>
+            {has &&
+                <>
+                <Card style={{padding:5}}>
                 <Title>Motorcycle List</Title>
                 
-            </View>
+            </Card>
            
                 <FlatList
                     data={vehiclelist}
                     keyExtractor={(val,i)=>i.toString()}
                     renderItem={renderItem}
-                />              
+                />
+                </>
+            }
+                          
             </RNscreen>
     );
 }
@@ -92,7 +103,8 @@ const style = StyleSheet.create({
         padding:10,
         marginHorizontal:10,
         marginVertical:5,
-        backgroundColor:'white'
+        backgroundColor:'white',
+        flex:1
     },
     render:{
         flex:1,

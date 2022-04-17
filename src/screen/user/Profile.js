@@ -9,7 +9,7 @@ import { Color } from '../../utils/Themes';
 import RNscreen from '../../components/RNscreen';
 import { NavigationContainer } from '@react-navigation/native';
 
-const Profile = ({navigation}) => {
+const Profile = ({navigation,route}) => {
   const {user} = React.useContext(UserContext);
   const {signOut} = React.useContext(AuthContext)
 
@@ -17,7 +17,7 @@ const Profile = ({navigation}) => {
 
   useEffect(() => {
     getuser();
-  },[])
+  },[route])
 
 
   const getuser = async() => {

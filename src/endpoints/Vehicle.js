@@ -18,5 +18,15 @@ export default {
         let data = await axios.get(ip + "vehicle/getbymid/"+m_id);
         console.log("data")
         return data.data
+    },
+    addpoints:(payload)=>{
+        const headers ={
+            "Content-Type" : "text/plain"
+        }
+        return axios.post(ip+"vehicle/addpoints",payload,{headers})
+    },
+    getmotorbyid:async(motor_id)=>{
+        let res = await axios.get(ip+"vehicle/getbyid/"+motor_id)
+        return res.data;
     }
 }

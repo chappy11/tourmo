@@ -161,11 +161,42 @@ const UpdateProfile = ({navigation}) => {
             }).then(res => {
                 if (res.data.status == 1) {
                       Alert.alert("Success", res.data.message, [{ text: 'okay', onPress: () => { } }]);
+                }else{
+                    Alert.alert("Error",res.data.message,[{text:'okay',onPress:()=>{}}])
                 }
             })
         }
     }
     
+    const submitchangedata = () =>{
+        const payload = {
+            fname:input.fname,
+            mname:input.mname,
+            lname:input.lname,
+            contact:input.contact,
+            user_id:user.user_id       
+        }
+
+        API.updatedata(payload).then(res=>{
+            if(res.data.status == 1){
+                Alert.alert("Success",res.data.message,[{text:'okay',onPress:()=>{}}])
+            }else{
+                Alert.alert("Error",res.data.message,[{text:'okay',onPress:()=>{}}])
+            }
+        })
+    }
+
+    const clear = (x) => {
+        if(x === "profile"){
+             ImageCropPicker.clean(res=>{
+                 onChange("profilepic","");
+                 setisProfileChange(false);
+            })
+        }else if(x === "license"){
+                onChange("license","");
+                setisLicenseChange(false);
+        }
+    }
  
     return (
         <RNscreen>
@@ -175,8 +206,8 @@ const UpdateProfile = ({navigation}) => {
                     (<>
                         <Avatar.Image source={{uri:input.profilepic}} size={200}/>
                         <View style={{flexDirection:'row'}}>
-                            <Button color={Color.secondary}>Save</Button>
-                            <Button color={Color.danger}>Cancel</Button>
+                            <Button color={Color.secondary} onPress={submitProfile}>Save</Button>
+                            <Button color={Color.danger} onPress={()=>clear("profile")}>Cancel</Button>
                         </View>
                     </>)
                         :
@@ -208,7 +239,7 @@ const UpdateProfile = ({navigation}) => {
                                     <TextInput placeholder="Old Password" secureTextEntry={true} onChangeText={(e)=>onChange("oldpassword",e)}/>
                                 </View>    
                                 <View style={{marginTop:15}}>
-                                    <Button color={Color.primary} mode='contained' contentStyle={{padding:5}}>Change password</Button>
+                                    <Button color={Color.primary} onPress={submitchangepass} mode='contained' contentStyle={{padding:5}}>Change password</Button>
                                 </View>
                         </>    
                     }
@@ -227,7 +258,7 @@ const UpdateProfile = ({navigation}) => {
                 <Caption>Contact No.</Caption>
                     <TextInput placeholder={profile.contact} onChangeText={(e) => onChange("contact", e)}/>
                 <View style={{ marginTop: 10 }}>
-                        <Button color={Color.primary} mode='contained' labelStyle={{ color: 'white' }} disabled={input.fname === "" && input.mname === "" && input.lname === "" && input.contact === "" ? true :false}>Save</Button>     
+                        <Button color={Color.primary} onPress={submitchangedata} mode='contained' labelStyle={{ color: 'white' }} disabled={input.fname === "" && input.mname === "" && input.lname === "" && input.contact === "" ? true :false}>Save</Button>     
                 </View>
              </Card>
             <Card style={style.pic}>
@@ -236,8 +267,8 @@ const UpdateProfile = ({navigation}) => {
                         (<>
                             <Image source={{ uri: input.license }} style={style.picsize}/>
                             <View style={{flexDirection:'row'}}>
-                                <Button>Save</Button>
-                                <Button>Cancel</Button>
+                                <Button onPress={submitLicense}>Save</Button>
+                                <Button onPress={()=>clear("license")}>Cancel</Button>
                             </View>
                         </>
                         ):

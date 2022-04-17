@@ -1,9 +1,11 @@
 import React from 'react'
 import Screen from '../components/Screen';
 import {FlatList,StyleSheet,View,Text,TouchableOpacity,Image} from 'react-native'
+import { UserContext } from '../context/Context';
 
 
 const Dashboard = ({navigation}) =>{
+    const {user} =React.useContext(UserContext)
     
     const renderItem = ({item,i}) =>(
         <TouchableOpacity key={i} onPress={()=>navigation.navigate(item.link)}>
@@ -18,13 +20,19 @@ const Dashboard = ({navigation}) =>{
     return(
         
     <View style={{flex:1,flexDirection:'column',justifyContent:'center',backgroundColor:'white',alignItems:'center'}}>
-          
-            <FlatList
-            data={navlist}
-            renderItem={renderItem}
-            numColumns={3}
-            keyExtractor={(val,i)=>i.toString()}
-            />
+          {user.isVer === "0" ?
+            (<Text>Your Account currently verifying by the admin</Text>)
+            :
+            (
+                <FlatList
+                    data={navlist}
+                    renderItem={renderItem}
+                    numColumns={3}
+                    keyExtractor={(val,i)=>i.toString()}
+                />
+            )  
+        }
+            
    </View>
         
     );
