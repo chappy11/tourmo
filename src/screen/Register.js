@@ -3,7 +3,7 @@ import React,{useState} from 'react'
 import Screen from '../components/Screen'
 import { Color } from '../utils/Themes'
 import {Func} from '../utils/Func'
-import { Caption,  Dialog, Headline, Title,Checkbox } from 'react-native-paper'
+import { Caption,  Dialog, Headline, Title,Checkbox, } from 'react-native-paper'
 import ImageCropPicker from 'react-native-image-crop-picker'
 import { TextInput } from '../components/TextInput'
 import { Button } from '../components/Button'
@@ -149,12 +149,14 @@ const Register = ({navigation}) => {
     }
   }
   return (
-    <Screen style={{backgroundColor:Color.primary}}>
+    
+    <View style={{ backgroundColor: Color.primary, flex: 1 }}>
+    
       <Headline style={style.headline}>Tourmo</Headline>
       
       {!isConfirm &&
 
-          <View style={{...style.container,marginTop:200}}>
+          <View style={{...style.container}}>
             {isSend ? (
               <>
               <Title style={{padding:20}}>Verify Email</Title>
@@ -286,7 +288,7 @@ const Register = ({navigation}) => {
             </Dialog.Actions>
           </Dialog>
 
-    </Screen>
+    </View>
   )
 }
 

@@ -8,7 +8,7 @@ import { UserContext } from '../../context/Context';
 import API from '../../endpoints/API';
 import { Color } from '../../utils/Themes';
 import Card from '../../components/Card';
-
+import { Button as Rbutton} from 'react-native-paper';
 const Vehicle  = ({navigation,route}) =>{
     const { user } = React.useContext(UserContext);
     const [has,sethas] = useState(false)
@@ -17,7 +17,7 @@ const Vehicle  = ({navigation,route}) =>{
     const [refresh,setrefresh] = useState(true)
     useEffect(() => {
          getdata();        
-    }, [])
+    }, [route])
    
     const getdata = async () => {
        try{
@@ -33,7 +33,7 @@ const Vehicle  = ({navigation,route}) =>{
                     sethas(false)
                 }
        }catch(e){
-           Alert.alert("Error","Something went wrong")
+           console.log(e)
        }
         
     }
@@ -60,9 +60,18 @@ const Vehicle  = ({navigation,route}) =>{
             <View style={style.card}>
                 {has ?
                     (<>
-
-                        <Title>{brand.motour_name ? brand.motour_name : ""}</Title>
-                        <Button name="Add Motorcycle" mode='contained' color={Color.secondary} textColor={Color.white} onPress={()=>navigation.navigate("Add Motor",{m_id:brand.m_id})}/>
+                        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                                    <Title>{brand.motour_name ? brand.motour_name : ""}</Title>
+                        </View>
+                        <View style={{display:'flex',width:'100%',padding:5,flexDirection:'row'}}>
+                            <View style={{flex:1}}>
+                                    <Rbutton color={Color.secondary}>Update</Rbutton>
+                            </View>
+                            <View style={{flex:1}}>
+                                    <Rbutton>Activate</Rbutton>
+                            </View>
+                        </View>
+                      
                     </>)                
                     :
                     (<>
@@ -79,9 +88,14 @@ const Vehicle  = ({navigation,route}) =>{
             </View>
             {has &&
                 <>
-                <Card style={{padding:5}}>
-                <Title>Motorcycle List</Title>
-                
+            <Card style={{padding:5}}>
+                    <View style={{ flexDirection: 'row', padding: 10, }}>
+                        <Title>Motorcycle List</Title>
+                        <View style={{flex:1,justifyContent:'flex-end',alignItems:'flex-end'}}>
+                                <Rbutton color={Color.primary} onPress={()=>navigation.navigate("Add Motor",{m_id:brand.m_id})}>Add Motorbike</Rbutton>
+                        </View>
+                    
+                    </View>    
             </Card>
            
                 <FlatList

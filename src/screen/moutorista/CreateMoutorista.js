@@ -13,6 +13,7 @@ import API from '../../endpoints/API';
 import { UserContext } from '../../context/Context';
 import Geolocation from '@react-native-community/geolocation';
 import { NavigationContainer } from '@react-navigation/native';
+import RNscreen from '../../components/RNscreen';
 
 const INITIAL_REGION = {
   latitude: 10.3157,
@@ -85,7 +86,7 @@ const CreateMoutorista = ({navigation,route}) => {
 
     
     return (
-        <Screen>
+       <RNscreen>
             {isView ? (
                 <Slide onPress={() => setisView(false)} accept={accept} setaccept={setaccept}/>
             ): (
@@ -94,7 +95,7 @@ const CreateMoutorista = ({navigation,route}) => {
                 </View>
             )}
             
-        </Screen>
+        </RNscreen>
     );
 }
 

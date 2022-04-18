@@ -67,7 +67,7 @@ const FromProfile = ({data,navigation}) =>{
         <Subheading style={{marginLeft:15}}>
             {data.tourmopoints}
         </Subheading>
- 
+                <Text style={{padding:10,marginBottom:10,color:Color.danger,textAlign:"center"}}>{data.isVerified == 0 ? "This Motorcycle is not verified yet please wait for the admin to response" : ""}</Text>
     </Card>
     <Card>
         {data.isVerified == 1 &&

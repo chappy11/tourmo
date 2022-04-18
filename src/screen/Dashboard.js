@@ -4,9 +4,17 @@ import {FlatList,StyleSheet,View,Text,TouchableOpacity,Image} from 'react-native
 import { UserContext } from '../context/Context';
 
 
-const Dashboard = ({navigation}) =>{
-    const {user} =React.useContext(UserContext)
-    
+const Dashboard = ({navigation,route}) =>{
+    const { user } = React.useContext(UserContext)
+    const [isver, setisver] = React.useState(false);
+    React.useEffect(() => {
+        if (user.isVer === "0") {
+            setisver(false)
+        } else {
+            setisver(true);
+        }
+    },[route,isver])
+
     const renderItem = ({item,i}) =>(
         <TouchableOpacity key={i} onPress={()=>navigation.navigate(item.link)}>
             <View style={style.item}>
@@ -17,10 +25,11 @@ const Dashboard = ({navigation}) =>{
             </View>
         </TouchableOpacity>
     )
+    console.log(isver)
     return(
         
     <View style={{flex:1,flexDirection:'column',justifyContent:'center',backgroundColor:'white',alignItems:'center'}}>
-          {user.isVer === "0" ?
+          {!isver  ?
             (<Text>Your Account currently verifying by the admin</Text>)
             :
             (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text } from 'react-native';
+import { RefreshControl, SafeAreaView, ScrollView, StyleSheet,KeyboardAvoidingView ,Text } from 'react-native';
 import { Color } from '../utils/Themes';
 
 const wait = (timeout) => {
@@ -16,18 +16,11 @@ const Screen = (props) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scrollView}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
-        }
-          >
-        
+      <KeyboardAvoidingView style={{flex:1}}>
+        <ScrollView style={{flex:1}}>
         {props.children}
-      </ScrollView>
+        </ScrollView>
+        </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

@@ -52,7 +52,7 @@ const Login = ({navigation}) => {
     }
 
     return (
-    <Screen style={{backgroundColor:Color.primary}}>
+    <View style={{backgroundColor:Color.primary,flex:1}}>
         <View style={{flex:1}}>
             <View style={style.headers}>
                 <Image source={require('../../asset/dowload.png')} style={{width:'80%',height:'80%'}} resizeMode='contain' />
@@ -81,7 +81,7 @@ const Login = ({navigation}) => {
                     
             </View>
         </View>
-    </Screen>
+    </View>
   )
 }
 
