@@ -28,5 +28,9 @@ export default {
     getmotorbyid:async(motor_id)=>{
         let res = await axios.get(ip+"vehicle/getbyid/"+motor_id)
         return res.data;
+    },
+    getallpostvehicle: async () => {
+        let res = await axios.get(ip + "vehicle/allpostvehicle");
+        return res.data;
     }
 }

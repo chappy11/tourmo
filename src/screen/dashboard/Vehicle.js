@@ -17,7 +17,7 @@ const Vehicle  = ({navigation,route}) =>{
     const [refresh,setrefresh] = useState(true)
     useEffect(() => {
          getdata();        
-    }, [route])
+    }, [route,has])
    
     const getdata = async () => {
        try{
@@ -36,6 +36,22 @@ const Vehicle  = ({navigation,route}) =>{
            console.log(e)
        }
         
+    }
+   
+    const changestatus = () => {
+        let status = brand.isActive == 0 ? 1 : 0;
+        let payload = {
+            mot_id: brand.m_id,
+            status: status
+        }
+        API.changestatus(payload).then(res => {
+            if (res.data.status == 1) {
+                Alert.alert("Success", res.data.message);
+                getdata();
+            } else {
+                Alert.alert("Error", res.data.message);
+            }
+        })
     }
 
     
@@ -65,10 +81,10 @@ const Vehicle  = ({navigation,route}) =>{
                         </View>
                         <View style={{display:'flex',width:'100%',padding:5,flexDirection:'row'}}>
                             <View style={{flex:1}}>
-                                    <Rbutton color={Color.secondary}>Update</Rbutton>
+                                    <Rbutton color={Color.secondary} onPress={()=>navigation.navigate("Update Motourista",{m_id:brand.m_id})}>Update</Rbutton>
                             </View>
                             <View style={{flex:1}}>
-                                    <Rbutton>Activate</Rbutton>
+                                <Rbutton onPress={changestatus}>{brand.isActive == 0 ? "Activate" : "Deactivate"}</Rbutton>
                             </View>
                         </View>
                       
@@ -77,11 +93,8 @@ const Vehicle  = ({navigation,route}) =>{
                     (<>
                         <Title>Motorista</Title>
                         <View style={{flex:1,justifyContent:'center'}}>
-                       
                         <Button name="Become Motorista" mode='contained' onPress={()=>navigation.navigate("Create Motourista")} color={Color.primary}/>
                         </View>
-                        
-    
                     </>)
                 }   
                
