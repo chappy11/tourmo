@@ -11,5 +11,12 @@ export const Func = {
     },
     filename:(file) =>{
         return file.split(/(\\|\/)/g).pop();
+    },
+    dateformat: (x) => {
+        
+        const year = x.getFullYear();
+        const month = (x.getMonth() +1).toString().padStart(2,0);
+        const day = x.getDate().toString().padStart(2,0);
+        return year + "-" + month + "-" + day;
     }
 }

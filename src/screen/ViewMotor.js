@@ -8,7 +8,8 @@ import { Button } from '../components/Button'
 import RNscreen from '../components/RNscreen'
 import { ip } from '../endpoints/API'
 import Swiper from 'react-native-swiper'
-const ViewMotor = ({navigation,route}) => {
+
+const ViewMotor = ({ navigation, route }) => {
     const data = route.params.item
     
     console.log(route.params);
