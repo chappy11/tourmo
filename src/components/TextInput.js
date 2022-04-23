@@ -2,7 +2,7 @@ import React from 'react'
 import { TextInput as Input,StyleSheet } from 'react-native'
 
 export const TextInput = (props) => (
-    <Input {...props}  style={{...props.style,...style.textInput}}/>
+    <Input {...props} style={{...props.style,...style.textInput}}/>
 )
 
 

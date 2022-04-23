@@ -56,7 +56,7 @@ const ViewMotor = ({ navigation, route }) => {
                     </MapView>
                 </View>
                 <View style={style.container}>
-                    <Button name="Rent this Vehicle" color={Color.primary} mode='contained' onPress={()=>navigation.navigate('Create Transaction',{rate:data.rate})}/>
+                    <Button name="Rent this Vehicle" color={Color.primary} mode='contained' onPress={() => navigation.navigate('Create Transaction', { data })}/>
                 </View>
  
         </ScrollView>

@@ -21,14 +21,17 @@ const App = () => {
   const [id, setid] = useState(null);
   const [user,setuser] = useState(null);
   const [email, setemail] = useState("");
+  const [isVer, setisVer] = useState(null);
   const authContext = useMemo(
     () => ({
-      signIn: (id,data) => {
+      signIn: (id,data,isVer) => {
         AsyncStorage.setItem("id", id);
         AsyncStorage.setItem("user",JSON.stringify(data))
         setisload(false);
         setid(id);
         setuser(data);
+        setisVer(isVer)
+      
       },
       signUp: email => {
         setemail(email);
@@ -74,7 +77,7 @@ const App = () => {
          {id === null ?
             <UnauthRoute/>
           :(
-            <UserContext.Provider value={{id,user}}>
+            <UserContext.Provider value={{id,user,isVer}}>
                 <AuthRoute/>
             </UserContext.Provider>
           )

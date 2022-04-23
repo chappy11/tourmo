@@ -14,7 +14,7 @@ const SplashScreen = ({navigation}) => {
         // }, 5000);
     },[])
     return (
-      <Screen isLoad={false}>
+        
           <View style={style.container}>
                 <Image source={require('../../asset/motor.png')} style={{width:400,height:500,}} resizeMode='contain'/>
                 
@@ -42,7 +42,7 @@ const SplashScreen = ({navigation}) => {
                
             </View>
             
-    </Screen>
+  
   )
 }
 

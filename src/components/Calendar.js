@@ -7,7 +7,7 @@ import { Button } from 'react-native-paper';
 import { Color } from '../utils/Themes';
 import { Func } from '../utils/Func';
 
-const Calendar = ({onChange,onDismiss}) => {
+const Calendar = ({onChange,onDismiss,type}) => {
     const minDate = new Date(); // Today
     
     React.useEffect(() => {
@@ -30,10 +30,11 @@ const Calendar = ({onChange,onDismiss}) => {
                 selectedDayColor="#7300e6"
                 selectedDayTextColor="#FFFFFF"
                 onDateChange={(e)=>onDateChange(Func.dateformat(e))}
+
             />
             <View style={{flexDirection:'row',marginTop:20}}>
                 <View style={{flex:1}}>
-                        <Button color={Color.primary}>Confirm</Button>
+                    <Button color={Color.primary} onPress={onDismiss}>Confirm</Button>
                 </View>
                 <View style={{flex:1}}>
                           <Button color={Color.danger} onPress={onDismiss}>Cancel</Button>

@@ -3,7 +3,7 @@ import React from 'react'
 import {View,StyleSheet,ImageBackground,Text,ScrollView,TouchableOpacity,FlatList,Alert,LogBox} from 'react-native'
 import ImagePicker from 'react-native-image-crop-picker';
 import { Button as Rbutton, Caption, Dialog, Headline, Menu, Portal, Title } from 'react-native-paper';
-import { TextInput } from 'react-native-paper';
+import { TextInput } from '../../components/TextInput';
 import RNscreen from '../../components/RNscreen';
 import Screen from '../../components/Screen';
 import API from '../../endpoints/API';
@@ -22,7 +22,8 @@ const AddVehicle = ({ navigation, route }) => {
         name: "",
         transmission: "",
         or: "",
-        cr:""
+        cr: "",
+        rate:0,
     });
     const [isSelect, setisSelect] = React.useState(false);
     const [open, setopen] = React.useState(false);
@@ -179,9 +180,13 @@ const AddVehicle = ({ navigation, route }) => {
                 Alert.alert("Error","You must indicate the Name,Brand,and Transmission of your Motorcycle")
                 
             }
+            else if (data.rate <= 0) {
+                Alert.alert("Error","Rate should be less than or equal to 0")
+            }
             else if (data.pic1 == "" || data.pic2 == "" || data.pic3 == "") {
                 Alert.alert("Error", "You must put pictures of you motorcycle");
             }
+            
             else if (data.or == "" || data.cr == "") {
                 Alert.alert("Error", "You must put put pictures of motorcycle documents");
             } else {
@@ -214,6 +219,7 @@ const AddVehicle = ({ navigation, route }) => {
                 formdat.append("m_id", route.params.m_id);
                 formdat.append("user_id", user.user_id);
                 formdat.append("name", data.name);
+                formdat.append("rate",data.rate)
                 formdat.append("brand", data.brand);
                 formdat.append("transmission", data.transmission);
 
@@ -264,9 +270,13 @@ const AddVehicle = ({ navigation, route }) => {
                             <Caption>Name</Caption>          
                             <Text style={{marginLeft:10,fontSize:15,color:"black"}}>{ data.name}</Text>                
                         </View>
-                        <View style={style.nameContainer}>
+                            <View style={style.nameContainer}>
                             <Caption>Transmission</Caption>          
                             <Text style={{marginLeft:10,fontSize:15,marginBottom:20,color:'black'}}>{ data.transmission}</Text>                
+                        </View>      
+                        <View style={{...style.nameContainer, marginBottom:10 }}>
+                            <Caption>Rate</Caption>
+                                <TextInput placeholder="0" keyboardType="numeric" onChangeText={(e)=>onChange("rate",e)}/>        
                         </View>        
                     </Card>
                     <Card>
@@ -410,8 +420,11 @@ export const Choose = ({getmotorcycle,setisSelect}) => {
     </TouchableOpacity>
     );
     return (
-        <View style={{flex:1}}>
-            <TextInput style={{backgroundColor:'white',marginHorizontal:15}} placeholder="Search" onChangeText={(e)=>onChange(e)} />
+        <View style={{ flex: 1 }}>
+            <Card style={{paddingVertical:10,}}>
+                                <TextInput style={{backgroundColor:'white',marginHorizontal:15}} placeholder="Search" onChangeText={(e)=>onChange(e)} />
+
+           </Card>
 
             {isEmpty &&
                 <Text>No Data found</Text>

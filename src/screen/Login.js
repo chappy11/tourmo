@@ -37,7 +37,7 @@ const Login = ({navigation}) => {
                 const {message,status,data} = res.data;
                 if(status == 1){
                     ToastAndroid.show(message,ToastAndroid.LONG);
-                    signIn(data[0].user_id,data[0])
+                    signIn(data[0].user_id, data[0], data[0].isVer);
                 
                 }else{
                     ToastAndroid.show("Wrong Credential",ToastAndroid.LONG)
