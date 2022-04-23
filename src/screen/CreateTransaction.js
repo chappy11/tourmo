@@ -16,8 +16,8 @@ const CreateTransaction = ({route}) => {
     const minDate = new Date(); // Today
    
     const [state, setstate] = useState({
-         hr: "hr",
-         min: null,
+         hr: "hour",
+         min: "minute",
          type:null, 
          start: "YYYY-MM-DD",
          end: "YYYY-MM-DD",
@@ -38,6 +38,7 @@ const CreateTransaction = ({route}) => {
   }
   console.log("DATE NOW", hour());
   
+ 
 
 
     return (
@@ -80,25 +81,40 @@ const CreateTransaction = ({route}) => {
                     </View>
             </View>
             <View style={{flexDirection:'row',width:'100%'}}>
-                  <Picker
-                    style={{flex:1}}
-                  >
-                    <Picker.Item label='hr' />
-                    {listhours.map((val,i) => (
-                      <Picker.Item label={val} value={val} />
-                    ))}  
-                  </Picker>
-                  <View>
+                <View style={{flex:1,flexDirection:'row'}}>
+                                <Picker
+                    style={{ flex: 1 }}
+                    selectedValue={state.hr}
+                    onValueChange={(e)=>onChange("hr",e)}
+                      >
+                        {hour().map(val => (
+                          <Picker.Item label={val} value={val}/>
+                        ))}     
+                    </Picker>
+                            <View style={{justifyContent:'center'}}>
+                                 <Text>Hour</Text>
+                    </View>
+                   
+                </View>
+                
+                  <View style={{ justifyContent:'center',paddingHorizontal:15}}>
                     <Text>:</Text>
                   </View>
-                  <Picker
-                    style={{flex:1}}
-                  >
-                  <Picker.Item label='hr' />
-                    <Picker.Item label='1' value={1} />
-                    <Picker.Item label='1' value={2} />
-                    <Picker.Item label='1' value={3}/>
-                  </Picker>
+                  <View style={{flexDirection:'row',flex:1}}>
+                      <Picker
+                          style={{ flex: 1 }}
+                          selectedValue={state.min}
+                           onValueChange={(e)=>onChange("min",e)}
+                           >
+                          {min().map(val => (
+                              <Picker.Item label={val} value={val}/>
+                            ))}
+                        </Picker>
+                         <View style={{justifyContent:'center'}}>
+                                 <Text>minute</Text>
+                    </View>
+                  </View>
+                
             </View>
           </View>               
           </View>
