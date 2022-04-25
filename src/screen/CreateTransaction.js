@@ -10,11 +10,10 @@ import Calendar from '../components/Calendar'
 import { Func } from '../utils/Func'
 import { hour,  min } from '../components/Time'
 import { Picker } from '@react-native-picker/picker'
-
+import {UserContext} from '../context/Context';
 
 const CreateTransaction = ({route}) => {
-    const minDate = new Date(); // Today
-   
+    const {user} = React.useContext(UserContext);
     const [state, setstate] = useState({
          hr: "hour",
          min: "minute",
@@ -33,12 +32,13 @@ const CreateTransaction = ({route}) => {
     setshowCalendar(true)
   }
   
-  const onChange = (name,val) => {
+    const onChange = (name,val) => {
       setstate({...state,[name]:val})
   }
-  console.log("DATE NOW", hour());
-  
  
+  console.log("USER",user)
+
+  
 
 
     return (
@@ -97,14 +97,14 @@ const CreateTransaction = ({route}) => {
                    
                 </View>
                 
-                  <View style={{ justifyContent:'center',paddingHorizontal:15}}>
+                  <View style={{ justifyContent:'center',paddingHorizontal:10}}>
                     <Text>:</Text>
                   </View>
                   <View style={{flexDirection:'row',flex:1}}>
                       <Picker
                           style={{ flex: 1 }}
                           selectedValue={state.min}
-                           onValueChange={(e)=>onChange("min",e)}
+                         onValueChange={(e)=>setstate({...state,min:e})}
                            >
                           {min().map(val => (
                               <Picker.Item label={val} value={val}/>

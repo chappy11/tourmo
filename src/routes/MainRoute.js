@@ -18,6 +18,7 @@ import ViewVehicle from '../screen/vehicle/ViewVehicle';
 import UpdateProfile from '../screen/user/UpdateProfile';
 import Topop from '../screen/vehicle/Topup';
 import UpdateMoutorista from '../screen/moutorista/UpdateMoutorista';
+import { Listofbookings } from '../screen/dashboard/Listofbookings';
 const MainStack = createNativeStackNavigator();
 
 // export const MainRoute = () => (
@@ -57,6 +58,7 @@ export const DashboardRoute = () =>(
     <DashBoardRouteStack.Navigator screenOptions={{headerShown:false}}>
         <DashBoardRouteStack.Screen name="Dashboard" component={Dashboard}/>
         <DashBoardRouteStack.Screen name="VehicleRoute" component={VehicleRoute}/>
+        <DashBoardRouteStack.Screen name="List Of Bookings" component={ListofBookings}/>
     </DashBoardRouteStack.Navigator>
 )
 
@@ -105,3 +107,10 @@ export const UserRoute = () => (
 );
 
 
+const ListofBookingsStack = createNativeStackNavigator();
+
+export const ListofBookings = () =>(
+    <ListofBookingsStack.Navigator>
+        <ListofBookingsStack.Screen name="List of Bookings" component={Listofbookings}/>
+    </ListofBookingsStack.Navigator>
+)

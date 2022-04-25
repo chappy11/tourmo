@@ -3,7 +3,7 @@ import React from 'react'
 export const hour = () => {
     const arr = [];
     for (let x = 1; x <= 12; x++){
-        arr.push(x.toString());
+        arr.push(x.toString().padStart(2,0));
     }
     return arr;
 }

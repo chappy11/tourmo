@@ -101,7 +101,7 @@ const Vehicle  = ({navigation,route}) =>{
             </View>
             {has &&
                 <>
-            <Card style={{padding:5}}>
+            <Card style={{padding:5,}}>
                     <View style={{ flexDirection: 'row', padding: 10, }}>
                         <Title>Motorcycle List</Title>
                         <View style={{flex:1,justifyContent:'flex-end',alignItems:'flex-end'}}>
@@ -112,7 +112,8 @@ const Vehicle  = ({navigation,route}) =>{
             </Card>
            
                 <FlatList
-                    data={vehiclelist}
+                    data={vehiclelist}                                           
+                    style={{flex:1}}
                     keyExtractor={(val,i)=>i.toString()}
                     renderItem={renderItem}
                 />

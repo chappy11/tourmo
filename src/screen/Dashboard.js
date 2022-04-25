@@ -69,8 +69,9 @@ const navlist = [
         image:require("../../asset/icon/transactionhistory.png")
     },
     {
-        name:"Bookings",
+        name:"List of Bookings",
         image:require("../../asset/icon/bookings.png"),
+        link:"List Of Bookings"
     },
     {
         name:"My Bookings",
