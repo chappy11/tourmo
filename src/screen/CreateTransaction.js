@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet,TouchableOpacity,Image,Alert } from 'react-native'
+import { View, Text, StyleSheet,TouchableOpacity,Image,Alert,ScrollView } from 'react-native'
 import React,{useState} from 'react'
 import RNscreen from '../components/RNscreen'
 import { Caption, Dialog, Headline, Modal, Portal,} from 'react-native-paper'
@@ -36,12 +36,12 @@ const CreateTransaction = ({route}) => {
   
   React.useEffect(() => {
     if (state.end !== "YYYY-MM-DD") {
-      onChange("no_days", Func.daterange(state.start, state.end));
+      onChange("no_days",Func.daterange(state.start,state.end))
       settotal((Func.daterange(state.start, state.end)) * parseInt(params.rate));
     } 
    
    
-  },[state.end])
+  },[state.end,state.start])
 
   const openCalendar = (type) => {
     settype(type)
@@ -96,18 +96,7 @@ const CreateTransaction = ({route}) => {
           ) :
           (
             <View>
-      <CalendarPicker
-  markingType={'period'}
-  markedDates={{
-    '2022-04-26': {marked: true, dotColor: '#50cebb',disabled:true},
-    '2022-05-16': {marked: true, dotColor: '#50cebb'},
-    '2022-05-21': {startingDay: true, color: '#50cebb', textColor: 'white'},
-    '2022-05-22': {color: '#70d7c7', textColor: 'white'},
-    '2022-05-23': {color: '#70d7c7', textColor: 'white', marked: true, dotColor: 'white'},
-    '2022-05-24': {color: '#70d7c7', textColor: 'white'},
-    '2022-05-25': {endingDay: true, color: '#50cebb', textColor: 'white'}
-  }}
-/>
+              <ScrollView>
           <View style={style.container}>
               <Headline>Create Booking</Headline>
           </View>
@@ -185,7 +174,8 @@ const CreateTransaction = ({route}) => {
                 </View>
                 
           </View>
-             
+            </ScrollView>
+                      
      </View>
         
           )

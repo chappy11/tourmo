@@ -1,5 +1,5 @@
 import React from 'react';
-
+import moment from 'moment';
 export const Func = {
     isEmail: (email) => {
         let valid =  /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/
@@ -18,5 +18,11 @@ export const Func = {
          const month = (date.getMonth() +1).toString().padStart(2,0);
          const day = date.getDate().toString().padStart(2,0);
          return year + "-" + month + "-" + day;
+    },
+    daterange:(date1,date2)=>{
+        var start = moment(date1);
+        var end = moment(date2);
+        return end.diff(start, "days")
+        
     }
 }
