@@ -34,10 +34,10 @@ const CreateTransaction = ({route}) => {
     
   const [isView, setisView] = useState(false);
   
-  React.useCallback(() => {
+  React.useEffect(() => {
     if (state.end !== "YYYY-MM-DD") {
       onChange("no_days", Func.daterange(state.start, state.end));
-      settotal((Func.daterange(state.start, state.end)) * params.rate);
+      settotal((Func.daterange(state.start, state.end)) * parseInt(params.rate));
     } 
    
    
@@ -92,11 +92,22 @@ const CreateTransaction = ({route}) => {
        <>
        {showCalendar ? 
           (
-            <Calendar type={type} onChange={onChange} onDismiss={()=>setshowCalendar(false)}/>  
+            <Calendar start={state.start} end={state.end} type={type} onChange={onChange} onDismiss={()=>setshowCalendar(false)}/>  
           ) :
           (
             <View>
- 
+      <CalendarPicker
+  markingType={'period'}
+  markedDates={{
+    '2022-04-26': {marked: true, dotColor: '#50cebb',disabled:true},
+    '2022-05-16': {marked: true, dotColor: '#50cebb'},
+    '2022-05-21': {startingDay: true, color: '#50cebb', textColor: 'white'},
+    '2022-05-22': {color: '#70d7c7', textColor: 'white'},
+    '2022-05-23': {color: '#70d7c7', textColor: 'white', marked: true, dotColor: 'white'},
+    '2022-05-24': {color: '#70d7c7', textColor: 'white'},
+    '2022-05-25': {endingDay: true, color: '#50cebb', textColor: 'white'}
+  }}
+/>
           <View style={style.container}>
               <Headline>Create Booking</Headline>
           </View>
@@ -161,8 +172,15 @@ const CreateTransaction = ({route}) => {
                       <Picker.Item label='PM' value="PM"/>
                   </Picker>
                 </View>
-               <View>
-               
+                <View style={{padding:10}}>
+                  <Caption>No. Days</Caption>
+                  <Text style={{fontSize:20}}>{state.no_days == 1 ? state.no_days+" day" : state.no_day+" days"}</Text>
+                </View>
+                <View style={{padding:10}}>
+                  <Caption>Total</Caption>
+                  <Text style={{fontSize:20}}>{'\u20B1 '+parseInt(total).toFixed(2)}</Text>
+                </View>
+                <View>
                   <Button disabled={isLoad ? true :false} name="Create Booking" color={Color.primary} mode='contained' onPress={submit}/>
                 </View>
                 
