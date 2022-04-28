@@ -6,12 +6,22 @@ import { Button } from '../components/Button'
 import { TextInput } from '../components/TextInput'
 import { Color } from '../utils/Themes'
 import CalendarPicker from 'react-native-calendar-picker/CalendarPicker'
-import Calendar from '../components/Calendar'
+import Calendarx from '../components/Calendarx'
 import { Func } from '../utils/Func'
 import { hour,  min } from '../components/Time'
 import { Picker } from '@react-native-picker/picker'
 import {UserContext} from '../context/Context';
 import API from '../endpoints/API';
+import Card from '../components/Card'
+import { Calendar } from 'react-native-calendars'
+
+function getmark(arr) {
+  let mark = {};
+  arr.forEach((day) => {
+     mark[day] = {selected:true,marked:true}
+  })
+  return mark;
+}
 
 
 const CreateTransaction = ({route}) => {
@@ -19,6 +29,7 @@ const CreateTransaction = ({route}) => {
   const [isLoad, setisLoad] = React.useState(false);
   const params = route.params.data;
   const [total, settotal] = React.useState(0);
+  let mark = {}
  const [state, setstate] = useState({
          hr: "01",
         min: "00",
@@ -31,9 +42,33 @@ const CreateTransaction = ({route}) => {
   const listhours = hour();
   const [type, settype] = useState("");
   const [showCalendar, setshowCalendar] = React.useState(false);
-    
+  const [datearr, setdatearr] = React.useState([]);  
   const [isView, setisView] = useState(false);
   
+  
+  React.useEffect(() => {
+    getdatelist();
+  },[route])
+
+  const getdatelist = async () => {
+     try { 
+     let rep = await API.getdatelist(params.motor_id);
+       console.log("RESPONSE",rep.data);
+       if (rep.status > 0) {
+         let r = [];
+         rep.data.map((val, i) => {
+         let n= Func.datebetween(val.start_date,val.end_date)
+          r.push(...n);
+         })
+         setdatearr(r);
+      }
+    } catch (e) {
+        console.log(e)
+      }
+  }
+  
+  
+
   React.useEffect(() => {
     if (state.end !== "YYYY-MM-DD") {
       onChange("no_days",Func.daterange(state.start,state.end))
@@ -51,11 +86,10 @@ const CreateTransaction = ({route}) => {
     const onChange = (name,val) => {
       setstate({...state,[name]:val})
   }
-  
-  console.log(state.no_days)
+  console.log(datearr);
 
   const submit = () => {
-   
+    console.log(Func.datebetween(new Date(state.start), new Date(state.end)));
     setisLoad(true);
     if (state.hr === "" || state.min === "") {
       Alert.alert("Warning", "Please specific time");
@@ -64,7 +98,14 @@ const CreateTransaction = ({route}) => {
     else if (state.start === "YYYY-MM-DD" || state.end === "YYYY-MM-DD") {
       Alert.alert("Warning", "Please Date start and End");
          setisLoad(false)
-    } else {
+    } else if (datearr.includes(state.start)) {
+      Alert.alert("Warning", "Your start date is not available")
+        setisLoad(false)
+    } else if (datearr.includes(state.end)) {
+      Alert.alert("Warning", "Your end date is not available"); 
+        setisLoad(false)
+    }
+    else {
       let payload = {
         motor_id: params.motor_id,
         user_id: user.user_id,
@@ -92,7 +133,7 @@ const CreateTransaction = ({route}) => {
        <>
        {showCalendar ? 
           (
-            <Calendar start={state.start} end={state.end} type={type} onChange={onChange} onDismiss={()=>setshowCalendar(false)}/>  
+            <Calendarx start={state.start} end={state.end} type={type} onChange={onChange} onDismiss={()=>setshowCalendar(false)}/>  
           ) :
           (
             <View>
@@ -100,7 +141,13 @@ const CreateTransaction = ({route}) => {
           <View style={style.container}>
               <Headline>Create Booking</Headline>
           </View>
-          <View style={ style.container}>
+                <Card>
+                  <Calendar
+                    markedDates={getmark(datearr)}
+                  
+                  />
+            </Card>
+            <View style={style.container}>
             <View>
                   <Caption>Date Start</Caption>
                   <View style={{ flexDirection: 'row' }}>
