@@ -111,16 +111,16 @@ const CreateTransaction = ({route}) => {
         user_id: user.user_id,
         time: state.hr + ":" + state.min + " " + state.isAm,
         date_start: state.start,
-        date_end:state.end
+        date_end:state.end,
+        no_days:state.no_days
       }
       API.createBookings(payload).then(res => {
         if (res.data.status === 1) {
           Alert.alert("Success", res.data.message);
-          
         } else {
           Alert.alert("Error", res.data.message);
         }
-         setisLoad(false)
+          setisLoad(false)
       })
     }
   }
@@ -210,7 +210,7 @@ const CreateTransaction = ({route}) => {
                 </View>
                 <View style={{padding:10}}>
                   <Caption>No. Days</Caption>
-                  <Text style={{fontSize:20}}>{state.no_days == 1 ? state.no_days+" day" : state.no_day+" days"}</Text>
+                  <Text style={{fontSize:20}}>{state.no_days == 1 ? state.no_days+" day" : state.no_days+" days"}</Text>
                 </View>
                 <View style={{padding:10}}>
                   <Caption>Total</Caption>

@@ -21,7 +21,7 @@ export default  {
         let resp = await Axios.get(ip + "booking/getdatelist/" + id);
         return resp.data;
     },
-    acceptbooking: async (booking_id) =>{
+    acceptbooking: async (id) =>{
         let resp = await Axios.patch(ip + "booking/accept/" + id);
         return resp.data;
     }
