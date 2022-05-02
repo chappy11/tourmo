@@ -77,8 +77,7 @@ const FromProfile = ({data,navigation}) =>{
         {data.isVerified == 1 &&
              <Button name="Top up" mode='contained' onPress={()=>navigation.navigate("Top up",{motor_id:data.motor_id})} color={Color.primary}/>
         }
-       
-       <Button name="Update"/>
+       <Button name="Update" onPress={()=>navigation.navigate("Update Vehicle",{motor_id:data.motor_id})}/>
     </Card>
     </> 
     )

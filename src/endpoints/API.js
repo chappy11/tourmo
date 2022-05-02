@@ -2,7 +2,7 @@ import axios from 'axios'
 import Bookings from './Bookings';
 import Moutorista from './Moutorista';
 import Vehicle from './Vehicle';
-export const ip = "http://192.168.1.18/tourmo/";
+export const ip = "http://192.168.1.10/tourmo/";
 //export const ip = "http://192.168.1.6/tourmo/";
 
 

@@ -44,9 +44,9 @@ const Topop = ({navigation,route}) =>{
                 <Caption style={{padding:20,textAlign:'center'}}>Note: Minimum of Top up is 500</Caption>
                <Caption>Card Number</Caption>
                <TextInput placeholder="Card number" onChangeText={(e)=>onChange("cardNumber",e)}/>
-                <Caption>Amount</Caption>
-                <TextInput placeholder="amount" keyboardType="numeric" onChangeText={(e)=>onChange("amount",e)}/>
-                <Text style={{paddingVertical:15}}>Tourmo Point: {input.amount}</Text>
+                <Caption>Php</Caption>
+                <TextInput placeholder="Php" keyboardType="numeric" onChangeText={(e)=>onChange("amount",e)}/>
+               
                 <Button name="Payment" mode='contained' onPress={pay} color={Color.primary}/>
            </Card>
         </RNscreen>

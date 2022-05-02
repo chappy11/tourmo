@@ -46,7 +46,15 @@ const Profile = ({navigation,route}) => {
               <Image source={{uri:ip+profile.license_pic}} style={{width:300,height:300}}/>
           </View>
         <View style={style.card}>
-          <Button name="Update Profile" mode='contained' color={Color.primary} onPress={() => navigation.navigate("Update Profile")}/>
+          {profile.isVer == 1 &&
+            <>
+              {profile.isMotourista == 0 &&
+                <Button name="Become a Motourista" mode="contained" color={Color.primary} onPress={()=>navigation.navigate("Create Motourista")}/>
+              }
+            </>
+          }
+              
+              <Button name="Update Profile" mode='contained' color={Color.primary} onPress={() => navigation.navigate("Update Profile")}/>
               <Button name="Logout" mode='outlined' color={Color.danger} onPress={signOut}/>
           </View>
       </ScrollView>

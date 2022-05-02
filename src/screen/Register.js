@@ -3,21 +3,23 @@ import React,{useState} from 'react'
 import Screen from '../components/Screen'
 import { Color } from '../utils/Themes'
 import {Func} from '../utils/Func'
-import { Caption,  Dialog, Headline, Title,Checkbox, } from 'react-native-paper'
+import { Caption,  Dialog, Headline, Title,Checkbox,Modal } from 'react-native-paper'
 import ImageCropPicker from 'react-native-image-crop-picker'
 import { TextInput } from '../components/TextInput'
 import { Button } from '../components/Button'
 import API from '../endpoints/API'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import { NavigationContainer } from '@react-navigation/native'
+import CalendarPicker from 'react-native-calendar-picker/CalendarPicker'
 
 const Register = ({navigation}) => {
-
+  const [openCalendar,setopenCalendar] = useState(false);
   const [read, setread] = useState(false);
   const [vcode,setvcode] = useState("");
   const [isSend,setisSend] = useState(false);
   const [isprocess,setisprocess] = useState(false);
   const [isConfirm,setisConfirm] = useState(false);
+  const [isLoad,setisLoad] = useState(false);
   const [isAccept, setisAccept] = useState(false);
   const [img, setimg] = useState("");   
   const [data, setdata] = useState({
@@ -31,6 +33,7 @@ const Register = ({navigation}) => {
     cpass: "",
     contact: "",
     license:"none",
+    date:""
   });
 
   const getYourImg = () => {
@@ -97,22 +100,30 @@ const Register = ({navigation}) => {
 
   const onSubmit = () => {
     setisprocess(true)
+    setisLoad(true);
     if (data.email === "" || data.pass === "" || data.cpass === "" || data.fname === "" || data.mname === "" || data.lname === "" || data.contact === "") {
       ToastAndroid.show("Fill Please Fill out all fields", ToastAndroid.SHORT);
+      setisLoad(false);
     }
     else if (!Func.isEmail(data.email)) {
       ToastAndroid.show("Invalid Email", ToastAndroid.SHORT);
+      setisLoad(false);
     }
     else if (data.pass !== data.cpass) {
       ToastAndroid.show("Password do not match", ToastAndroid.SHORT);
+      setisLoad(false);
     } else if (Func.isValidPhone(data.contact)) {
       ToastAndroid.show("Invalid Phone Number", ToastAndroid.SHORT);
+      setisLoad(false);
     } else if (!isAccept) {
       ToastAndroid.show("Please Accept and Read Tourmo Terms and Regulation", ToastAndroid.SHORT);
+      setisLoad(false);
     } else if (data.image === "none") {
       ToastAndroid.show("Please put your picture",ToastAndroid.SHORT)
+      setisLoad(false);
     } else if (data.license === "none") {
       ToastAndroid.show("Please put your Driver's License")
+      setisLoad(false);
     }else {
       let formData = new FormData(); 
       formData.append("fname",data.fname);
@@ -120,6 +131,7 @@ const Register = ({navigation}) => {
       formData.append("lname",data.lname);
       formData.append("contact",data.contact);
       formData.append("email",data.email);
+      formData.append("date",data.date);
       formData.append("password",data.pass);
       formData.append("user_pic",{
         uri:data.image,
@@ -138,11 +150,15 @@ const Register = ({navigation}) => {
       if(status == 1){
         ToastAndroid.show(message,ToastAndroid.LONG)
         setisprocess(false)
+        setisLoad(false);
         navigation.navigate("Login");
       }else{
         ToastAndroid.show(message,ToastAndroid.LONG)
+        setisLoad(false);
         setisprocess(false)
       }
+     }).catch((e)=>{
+       setisLoad(false);
      })
 
    
@@ -240,12 +256,24 @@ const Register = ({navigation}) => {
                 <Caption style={style.label}>Driver License Picture</Caption>
                 <TouchableOpacity onPress={getLicenseImg} style={style.image }>
                   {data.license !== "none" &&
-                      <Image source={{ uri: data.license }} style={style.image} />
+                       <Image source={{ uri: data.license }} style={style.image} />
                   }
                   
                 </TouchableOpacity>
               </View>
-                
+              <View style={style.inputView}>
+                  <Caption>Expiry License</Caption>
+                      <View style={{ flexDirection: 'row' }}>
+                        <View style={{flex:1}}>
+                          <TextInput disabled placeholder={data.date} />
+                        </View> 
+                        <View style={{justifyContent:'center',alignItems:'center',padding:10}}>
+                          <TouchableOpacity onPress={()=>setopenCalendar(true)}>
+                              <Image source={require('../../asset/icon/calendar.png')} style={{ width: 30, height: 30 }} />
+                          </TouchableOpacity>    
+                        </View>
+                </View>
+                </View>
               <TouchableOpacity style={{
                 display: 'flex', flexDirection: "row", ...style.inputView, height: 200, alignItems: 'center'
               }}
@@ -262,7 +290,17 @@ const Register = ({navigation}) => {
           </View>
       }
     
-         
+      <Modal visible={openCalendar} onDismiss={()=>setopenCalendar(false)} style={{backgroundColor:'white'}}>
+        <CalendarPicker
+           startFromMonday={true}
+           minDate={new Date()}
+           todayBackgroundColor="#f2e6ff"
+           onDateChange={(date)=>{
+             onChange("date",Func.dateformat(date));
+             setopenCalendar(false)
+           }}
+        />
+      </Modal>
       
       <Dialog onDismiss={() => setread(!read)} visible={read}>
             <Dialog.Title>Terms and Agreement</Dialog.Title>
@@ -272,7 +310,7 @@ const Register = ({navigation}) => {
         <Dialog.Actions>
           <View style={{display:'flex',flexDirection:'row'}}>
             <View style={{marginHorizontal:2}}>
-              <Button name={isAccept ? "Unaccept" : "Accept"} mode='contained' color={Color.primary}
+              <Button name={isAccept ? "Unaccept" : "Accept"} disabled={isLoad ? true :false} mode='contained' color={Color.primary}
                 onPress={() => {
                   setisAccept(!isAccept)
                   setread(!read)
@@ -288,7 +326,7 @@ const Register = ({navigation}) => {
             </Dialog.Actions>
           </Dialog>
 
-    </View>
+    </View> 
   )
 }
 

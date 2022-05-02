@@ -13,6 +13,7 @@ import { AuthContext } from '../context/Context';
 
 const Login = ({navigation}) => {
     const {signIn} = React.useContext(AuthContext)
+    const [isLoad,setisLoad] = React.useState(false);
     const [input,setinput] = useState({
         email:"",
         password:""
@@ -23,9 +24,10 @@ const Login = ({navigation}) => {
     }
 
     const submit = () =>{
-       
+        setisLoad(true);
         if(input.email === "" || input.password === ""){
             ToastAndroid.show("Fillout all fields",ToastAndroid.LONG);
+            setisLoad(false)
         }else{
             const payload = {
                 email:input.email,
@@ -37,12 +39,15 @@ const Login = ({navigation}) => {
                 const {message,status,data} = res.data;
                 if(status == 1){
                     ToastAndroid.show(message,ToastAndroid.LONG);
+                    setisLoad(false);
                     signIn(data[0].user_id, data[0], data[0].isVer);
                 
                 }else{
-                    ToastAndroid.show("Wrong Credential",ToastAndroid.LONG)
+                    setisLoad(false);
+                    ToastAndroid.show("Wrong Credential",ToastAndroid.LONG);
                 }
             })
+            
         }
     }
 
@@ -70,7 +75,7 @@ const Login = ({navigation}) => {
                         <TextInput placeholder='Password' secureTextEntry={true} onChangeText={(e)=>onChange("password",e)}/>
                     </View>
                      <View style={{paddingVertical:10,paddingHorizontal:15}}>
-                        <Button color={Color.primary} mode='contained' name="Sign in" onPress={submit}/>
+                        <Button color={Color.primary} disabled={isLoad ? true: false} mode='contained' name="Sign in" onPress={submit}/>
                     </View>
                     <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent:'center',alignItems:'center'}}>
                         <Text>Not Registered yet? </Text>

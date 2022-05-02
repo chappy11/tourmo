@@ -19,6 +19,7 @@ import Loading from './src/screen/Loading';
 const App = () => {
   const [isload, setisload] = useState(true);
   const [id, setid] = useState(null);
+  const [isMotourista,setisMotourista] = useState(null);
   const [user,setuser] = useState(null);
   const [email, setemail] = useState("");
   const [isVer, setisVer] = useState(null);
@@ -30,7 +31,7 @@ const App = () => {
         setisload(false);
         setid(id);
         setuser(data);
-        setisVer(isVer)
+        setisVer(isVer);
       
       },
       signUp: email => {
@@ -46,6 +47,7 @@ const App = () => {
     [],
   );
  
+console.ignoredYellowBox = ["Warning: Each", "Warning: Failed"];
   useEffect(() => {
     AsyncStorage.getItem("id")
       .then(res => {

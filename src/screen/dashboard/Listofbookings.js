@@ -1,15 +1,15 @@
 import React from "react";
 import RNscreen from "../../components/RNscreen";
-import {Text,FlatList,StyleSheet,Image,View} from 'react-native';
+import {Text,FlatList,StyleSheet,Image,View,TouchableOpacity} from 'react-native';
 import { UserContext } from "../../context/Context";
 import API,{ip} from "../../endpoints/API";
-import { Avatar } from "react-native-paper";
-export const Listofbookings = () =>{
+import { Avatar, Headline, Title } from "react-native-paper";
+export const Listofbookings = ({navigation}) =>{
     const {user} = React.useContext(UserContext);
     const [data,setdata] = React.useState([]);
-    React.useEffect(()=>{
+    React.useLayoutEffect(()=>{
         getdata();
-    },[])
+    },[navigation])
     const getdata = async()=>{
         let res =  await API.gelistofbookings(user.user_id);
         if(res.status == 1){
@@ -18,15 +18,21 @@ export const Listofbookings = () =>{
     }
 
     const renderItem = ({item}) =>(
+        <TouchableOpacity onPress={()=>navigation.push("View Booking",item)}>
         <View style={style.renderItem}>
             <Avatar.Image source={{uri:ip+item.user_pic}} size={100}/>
-            <Text>{item.firstname}</Text>
+            <View style={{marginLeft:10}}>
+                <Title>{item.firstname+" "+item.middlename+" "+item.lastname}</Title>
+                <Text>{"No. Days: "+ item.no_days}</Text>
+                <Text>{"Total Amount: "+ item.total_amount}</Text>
+            </View>
         </View>
+        </TouchableOpacity>
     );
     
     return (
         <RNscreen>
-            <Text>Bookings</Text>
+            
             <FlatList
                 data={data}
                 keyExtractor={(val,i) => i.toString()}
@@ -39,6 +45,8 @@ export const Listofbookings = () =>{
 const style = StyleSheet.create({
     renderItem:{
         flexDirection:'row',
-        width:'100%'
+        width:'100%',
+        backgroundColor:'lightgray',
+        padding:10
     }
 })

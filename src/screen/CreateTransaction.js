@@ -68,6 +68,7 @@ const CreateTransaction = ({route}) => {
   }
   
   
+  
 
   React.useEffect(() => {
     if (state.end !== "YYYY-MM-DD") {
@@ -112,7 +113,8 @@ const CreateTransaction = ({route}) => {
         time: state.hr + ":" + state.min + " " + state.isAm,
         date_start: state.start,
         date_end:state.end,
-        no_days:state.no_days
+        no_days:state.no_days,
+        total:total
       }
       API.createBookings(payload).then(res => {
         if (res.data.status === 1) {
@@ -150,15 +152,15 @@ const CreateTransaction = ({route}) => {
             <View style={style.container}>
             <View>
                   <Caption>Date Start</Caption>
-                  <View style={{ flexDirection: 'row' }}>
-                    <View style={{flex:1}}>
-                      <TextInput disabled placeholder={state.start}/>
-                    </View> 
-                    <View style={{justifyContent:'center',alignItems:'center',padding:10}}>
-                      <TouchableOpacity onPress={() => openCalendar("start")}>
-                           <Image source={require('../../asset/icon/calendar.png')} style={{ width: 30, height: 30 }} />
-                      </TouchableOpacity>    
-                    </View>
+                      <View style={{ flexDirection: 'row' }}>
+                        <View style={{flex:1}}>
+                          <TextInput disabled placeholder={state.start}/>
+                        </View> 
+                        <View style={{justifyContent:'center',alignItems:'center',padding:10}}>
+                          <TouchableOpacity onPress={() => openCalendar("start")}>
+                              <Image source={require('../../asset/icon/calendar.png')} style={{ width: 30, height: 30 }} />
+                          </TouchableOpacity>    
+                        </View>
                 </View>
                 </View>
                <View>

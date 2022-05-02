@@ -1,8 +1,9 @@
 
 import React from 'react'
-import {View,StyleSheet,ImageBackground,Text,ScrollView,TouchableOpacity,FlatList,Alert,LogBox} from 'react-native'
+import {View,StyleSheet,ImageBackground,Text,ScrollView,TouchableOpacity,FlatList,Alert,LogBox,Image} from 'react-native'
 import ImagePicker from 'react-native-image-crop-picker';
-import { Button as Rbutton, Caption, Dialog, Headline, Menu, Portal, Title } from 'react-native-paper';
+import CalendarPicker from 'react-native-calendar-picker/CalendarPicker';
+import { Button as Rbutton, Caption, Dialog, Headline, Menu, Portal, Title, Modal } from 'react-native-paper';
 import { TextInput } from '../../components/TextInput';
 import RNscreen from '../../components/RNscreen';
 import Screen from '../../components/Screen';
@@ -24,7 +25,9 @@ const AddVehicle = ({ navigation, route }) => {
         or: "",
         cr: "",
         rate:0,
+        date:"",
     });
+    const [openCalendar,setopenCalendar] = React.useState(false);
     const [isSelect, setisSelect] = React.useState(false);
     const [open, setopen] = React.useState(false);
     const [selectedimage, setselectedimage] = React.useState("");
@@ -178,17 +181,20 @@ const AddVehicle = ({ navigation, route }) => {
         try {
             if (data.brand == "" || data.name == "" || data.transmission == "") {
                 Alert.alert("Error","You must indicate the Name,Brand,and Transmission of your Motorcycle")
-                
+                setisloading(false);
             }
             else if (data.rate <= 0) {
                 Alert.alert("Error","Rate should be less than or equal to 0")
+                setisloading(false);
             }
             else if (data.pic1 == "" || data.pic2 == "" || data.pic3 == "") {
                 Alert.alert("Error", "You must put pictures of you motorcycle");
+                setisloading(false);
             }
             
             else if (data.or == "" || data.cr == "") {
                 Alert.alert("Error", "You must put put pictures of motorcycle documents");
+                setisloading(false);
             } else {
                 let formdat = new FormData();
                 formdat.append("pic1", {
@@ -222,10 +228,13 @@ const AddVehicle = ({ navigation, route }) => {
                 formdat.append("rate",data.rate)
                 formdat.append("brand", data.brand);
                 formdat.append("transmission", data.transmission);
-
+                formdat.append("date",data.date);
                 API.insertVehicle(formdat).then(res => {
                     if(res.data.status == 1){
                         Alert.alert("Success",res.data.message,[{text:"Okay",onPress:()=>navigation.push("Vehicle")}])
+                        setisloading(false);
+                    }else{
+                        Alert("Error",res.data.message);
                     }
                 }).catch(err=>{
                     Alert.alert("Error","Something went wrong")
@@ -317,13 +326,26 @@ const AddVehicle = ({ navigation, route }) => {
                                         <Text>Certifition of Registration</Text>
                                     </ImageBackground>
                             </TouchableOpacity>
-                            
                         </View> 
+                        <View style={{paddingHorizontal:10,paddingVertical:20}}>
+                        <Caption>Expiry License</Caption>
+                      <View style={{ flexDirection: 'row' }}>
+                        <View style={{flex:1}}>
+                          <TextInput disabled placeholder={data.date} />
+                        </View> 
+                        <View style={{justifyContent:'center',alignItems:'center',padding:10}}>
+                          <TouchableOpacity onPress={()=>setopenCalendar(true)}>
+                              <Image source={require('../../../asset/icon/calendar.png')} style={{ width: 30, height: 30 }} />
+                          </TouchableOpacity>    
+                        </View>
+                        </View>
+                        </View>
                     </Card>
                     <Card>
                             <Button name="Add" mode='contained' onPress={submit} disabled={isloading ? true : false} color={Color.primary}/>
                     </Card>                        
-                                      
+                        
+
                     <Portal>
                        <Dialog visible={open} onDismiss={()=>setopen(false)}> 
                             <Menu.Item title="Camera" onPress={()=>pick("camera")}/>
@@ -331,8 +353,19 @@ const AddVehicle = ({ navigation, route }) => {
                         </Dialog>
                     </Portal>        
             </ScrollView>)
+                
             }
-          
+           <Modal visible={openCalendar} onDismiss={()=>setopenCalendar(false)} style={{backgroundColor:'white'}}>
+        <CalendarPicker
+           startFromMonday={true}
+           minDate={new Date()}
+           todayBackgroundColor="#f2e6ff"
+           onDateChange={(date)=>{
+             onChange("date",Func.dateformat(date));
+             setopenCalendar(false)
+           }}
+        />
+      </Modal>     
 
         </RNscreen>
     );

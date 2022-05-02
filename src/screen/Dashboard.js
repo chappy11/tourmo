@@ -2,19 +2,29 @@ import React from 'react'
 import Screen from '../components/Screen';
 import {FlatList,StyleSheet,View,Text,TouchableOpacity,Image} from 'react-native'
 import { UserContext } from '../context/Context';
+import API from '../endpoints/API';
 
 
 const Dashboard = ({navigation,route}) =>{
     const { user } = React.useContext(UserContext)
     const [isver, setisver] = React.useState(false);
-    React.useEffect(() => {
-        if (user.isVer === "0") {
-            setisver(false)
-        } else {
-            setisver(true);
-        }
+    const [isMotourista,setisMotourista] =  React.useState(false);
+    React.useLayoutEffect(() => {
+        getdata();
     },[route,isver])
 
+    const getdata = async() =>{
+        let resp = await API.getprofile(user.user_id);
+        let data = resp.data[0];
+        if(data.isVer == 1){
+            setisver(true)
+        }
+
+        if(data.isMotourista == 1){
+            setisMotourista(true)
+        }
+
+    }
     const renderItem = ({item,i}) =>(
         <TouchableOpacity key={i} onPress={()=>navigation.navigate(item.link)}>
             <View style={style.item}>
@@ -33,12 +43,25 @@ const Dashboard = ({navigation,route}) =>{
             (<Text>Your Account currently verifying by the admin</Text>)
             :
             (
-                <FlatList
+                <>
+                {isMotourista ? (
+                  <>
+                    <FlatList
                     data={navlist}
                     renderItem={renderItem}
                     numColumns={3}
                     keyExtractor={(val,i)=>i.toString()}
-                />
+                   />
+                   </>
+                    ):(
+                        <FlatList
+                        data={nav}
+                        renderItem={renderItem}
+                        numColumns={3}
+                        keyExtractor={(val,i)=>i.toString()}
+                       />                          
+                    )}
+              </>  
             )  
         }
             
@@ -78,3 +101,10 @@ const navlist = [
         image:require("../../asset/icon/mybookings.png"),
     }
 ]
+
+const nav = [
+    {
+        name:"Transaction History",
+        image:require("../../asset/icon/transactionhistory.png")
+    },
+];

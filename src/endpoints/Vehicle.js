@@ -32,5 +32,11 @@ export default {
     getallpostvehicle: async () => {
         let res = await axios.get(ip + "vehicle/allpostvehicle");
         return res.data;
+    },
+    updatevehicle:(payload)=>{
+        const headers = {
+            "Content-Type" : "multipart/form-data"
+        }
+        return axios.post(ip+"vehicle/update",payload,{headers});
     }
 }

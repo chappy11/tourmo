@@ -22,7 +22,7 @@ export default  {
         return resp.data;
     },
     acceptbooking: async (id) =>{
-        let resp = await Axios.patch(ip + "booking/accept/" + id);
+        let resp = await Axios.post(ip + "booking/acceptbooking/" + id);
         return resp.data;
     }
 }

@@ -11,7 +11,7 @@ import RNscreen from '../components/RNscreen'
 import API, { ip } from '../endpoints/API'
 import Geolocation from '@react-native-community/geolocation'
 import { getDistance } from 'geolib';
-const Home = ({ navigation }) => {
+const Home = ({ navigation,route }) => {
   const [location, setlocation] = React.useState({
     latitude: 0,
     longitude:0
@@ -22,13 +22,19 @@ const Home = ({ navigation }) => {
     Geolocation.getCurrentPosition((pos) => {
       setlocation({ latitude: pos.coords.latitude, longitude: pos.coords.longitude });
     })
-    getdata();
+    
   },[])
+
+  React.useEffect(()=>{
+    getdata();
+  },[route,navigation])
   
   const getdata = async () => {
     try {
       let resp = await API.getallpostvehicle();
+      console.log("REsp",resp.data);
       if (resp.status == 1) {
+        
         setdata(resp.data)
         //console.log("DATA",resp.data);
         }

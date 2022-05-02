@@ -1,15 +1,28 @@
 import React from 'react'
 import RNscreen from '../../components/RNscreen';
-import { Text,StyleSheet } from 'react-native';
+import { Text,StyleSheet,ScrollView,View,Alert } from 'react-native';
 import Card from '../../components/Card';
 import { Avatar, Caption, Headline, Subheading } from 'react-native-paper';
-import { ip } from '../../endpoints/API';
-
-const ViewBooking = ({route}) => {
-    const data = route.params.item;
+import API, { ip } from '../../endpoints/API';
+import {Button} from '../../components/Button'
+import { Color } from '../../utils/Themes';
+import { NavigationContainer } from '@react-navigation/native';
+const ViewBooking = ({route,navigation}) => {
+    const data = route.params;
+    
+    const accept = () =>{
+        API.acceptbooking(data.booking_id).then(res=>{
+            if(res.status == 1){
+                Alert.alert("Success",res.message,[{text:"Okay",onPress:()=>navigation.push("List of Bookings")}]);
+            }else{
+                Alert.alert("Error",res.message)
+            }
+        })
+    }
+    
     return (
         <RNscreen>
-            <SrollView style={{ flex:1}}>
+            <ScrollView style={{ flex:1}}>
             <Card style={{flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Avatar.Image source={{ uri: ip + data.user_pic }} size={100}/>
                 <Headline>{data.firstname+" "+data.middlename+" "+data.lastname}</Headline>
@@ -25,8 +38,11 @@ const ViewBooking = ({route}) => {
                 <Text style={style.textData}>{data.end_date}</Text>
                 <Caption>Date Start</Caption>
                 <Text style={style.textData}>{data.start_date}</Text>
+                <View style={{marginTop:20}}>
+                    <Button name="Accept" color={Color.primary} mode='contained' onPress={accept}/>
+                </View>
             </Card>
-            </SrollView>
+            </ScrollView>
         </RNscreen>
     );
 }

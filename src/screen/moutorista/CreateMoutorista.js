@@ -24,6 +24,7 @@ const INITIAL_REGION = {
 const CreateMoutorista = ({navigation,route}) => {
     const mapRef = React.useRef(null)
     const [isView, setisView] = React.useState(true);
+    const [isLoad,setisLoad] = React.useState(false);
     const [input, setinput] = useState({
         name:""
     })
@@ -56,8 +57,10 @@ const CreateMoutorista = ({navigation,route}) => {
         setregion(region)
     }
     const submit = async() => {
+        setisLoad(true);
         if (input.name === "") {
             Alert.alert("Error", "Fill out all Fields",[{text:"Okay"}]);
+            setisLoad(false)
         } else {
                 let payload = {
                     user_id: user.user_id,
@@ -73,11 +76,13 @@ const CreateMoutorista = ({navigation,route}) => {
                         res.data.message,
                         [{
                             text: "Okay",
-                            onPress:()=>navigation.push("Vehicle")
+                            onPress:()=>navigation.push("Profile")
                         }]
                     );
+                    setisLoad(false)
                 } else {
                     Alert.alert("Error",res.data.message,[{text:"Okay"}])
+                    setisLoad(false);
                 }
                 
          }
@@ -91,7 +96,7 @@ const CreateMoutorista = ({navigation,route}) => {
                 <Slide onPress={() => setisView(false)} accept={accept} setaccept={setaccept}/>
             ): (
                 <View style={{flex:1,backgroundColor:Color.white}}>
-                        <CreateMotourista region={region} onRegionChange={onRegionChange} setregion={setregion} onChange={onChange} coordinate={coordinate} markPosition={markPosition} submit={submit}/>
+                        <CreateMotourista region={region} onRegionChange={onRegionChange} setregion={setregion} onChange={onChange} coordinate={coordinate} markPosition={markPosition}  submit={submit}/>
                 </View>
             )}
             

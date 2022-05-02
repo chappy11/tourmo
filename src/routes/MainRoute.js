@@ -20,6 +20,7 @@ import Topop from '../screen/vehicle/Topup';
 import UpdateMoutorista from '../screen/moutorista/UpdateMoutorista';
 import { Listofbookings } from '../screen/dashboard/Listofbookings';
 import ViewBooking from '../screen/dashboard/ViewBooking';
+import UpdateVehicle from '../screen/vehicle/UpdateVehicle';
 const MainStack = createNativeStackNavigator();
 
 // export const MainRoute = () => (
@@ -68,11 +69,11 @@ const VehicleStack = createNativeStackNavigator();
 export const VehicleRoute = () => (
     <VehicleStack.Navigator>
         <VehicleStack.Screen name="Vehicle" component={Vehicle} />
-        <VehicleStack.Screen name="Create Motourista" component={CreateMoutorista} />
         <VehicleStack.Screen name="Update Motourista" component={UpdateMoutorista}/>
         <VehicleStack.Screen name="Add Motor" component={AddVehicle}/>
         <VehicleStack.Screen name="View Vehicle" component={ViewVehicle}/>
         <VehicleStack.Screen name="Top up" component={Topop}/>
+        <VehicleStack.Screen name="Update Vehicle" component={UpdateVehicle}/>
     </VehicleStack.Navigator>
 )
 
@@ -104,6 +105,7 @@ export const UserRoute = () => (
     <UserStack.Navigator>
         <UserStack.Screen name="Profile" component={Profile} />
         <UserStack.Screen name="Update Profile" component={UpdateProfile}/>
+        <UserStack.Screen name="Create Motourista" component={CreateMoutorista} />
     </UserStack.Navigator>
 );
 
