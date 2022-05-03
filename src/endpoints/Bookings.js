@@ -24,5 +24,9 @@ export default  {
     acceptbooking: async (id) =>{
         let resp = await Axios.post(ip + "booking/acceptbooking/" + id);
         return resp.data;
+    },
+    getbookingbyuser: async (id) => {
+        let resp = await Axios.get(ip + "booking/getbyuser/" + id);
+        return resp;
     }
 }
