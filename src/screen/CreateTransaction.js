@@ -61,6 +61,8 @@ const CreateTransaction = ({route}) => {
           r.push(...n);
          })
          setdatearr(r);
+       } else {
+         setdatearr([]);
       }
     } catch (e) {
         console.log(e)
@@ -150,32 +152,25 @@ const CreateTransaction = ({route}) => {
                   />
             </Card>
             <View style={style.container}>
-            <View>
+            <View style={{flexDirection:'row'}}>
+                  <View style={{ flex: 1,padding:10 }}>
                   <Caption>Date Start</Caption>
                       <View style={{ flexDirection: 'row' }}>
                         <View style={{flex:1}}>
                           <TextInput disabled placeholder={state.start}/>
                         </View> 
-                        <View style={{justifyContent:'center',alignItems:'center',padding:10}}>
-                          <TouchableOpacity onPress={() => openCalendar("start")}>
-                              <Image source={require('../../asset/icon/calendar.png')} style={{ width: 30, height: 30 }} />
-                          </TouchableOpacity>    
-                        </View>
                 </View>
                 </View>
-               <View>
+               <View style={{flex:1,padding:10}}>
                       <Caption>Date End</Caption>
                       <View style={{ flexDirection: 'row' }}>
                         <View style={{flex:1}}>
                           <TextInput disabled placeholder={state.end}/>
                         </View> 
-                        <View style={{justifyContent:'center',alignItems:'center',padding:10}}>
-                          <TouchableOpacity onPress={() => openCalendar("end")}>
-                              <Image source={require('../../asset/icon/calendar.png')} style={{ width: 30, height: 30 }} />
-                          </TouchableOpacity>    
-                        </View>
-                    </View>
-            </View>
+                </View>
+                 </View>
+                  </View>
+                  <View><Button name="Select Date" onPress={()=>openCalendar("end")} mode='contained' color={Color.primary}/></View>
                 <View>
                   <Caption>Time Start</Caption>
                 </View>    

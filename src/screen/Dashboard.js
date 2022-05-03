@@ -3,14 +3,31 @@ import Screen from '../components/Screen';
 import {FlatList,StyleSheet,View,Text,TouchableOpacity,Image} from 'react-native'
 import { UserContext } from '../context/Context';
 import API from '../endpoints/API';
+import { Color } from '../utils/Themes';
+import {Button} from '../components/Button';
+import { Func } from '../utils/Func';
+import CountDown from 'react-native-countdown-component';
 
+function calculate(d2)  {
+        let date1 = new Date();
+        let date2 = new Date(d2);
+        var dif = (date2.getTime() - date1.getTime()) / 1000;
+    return dif;
+    }
 
 const Dashboard = ({navigation,route}) =>{
-    const { user } = React.useContext(UserContext)
+    const { user,id } = React.useContext(UserContext)
     const [isver, setisver] = React.useState(false);
-    const [isMotourista,setisMotourista] =  React.useState(false);
+    const [isMotourista, setisMotourista] = React.useState(false);
+    const [booking, setbooking] = React.useState({});
+    const [hasbooking, sethasbooking] = React.useState(false);
+    const [count, setcount] = React.useState(0);
     React.useLayoutEffect(() => {
         getdata();
+      
+    }, [route])
+    React.useEffect(() => {
+          viewbooking();
     },[route,isver])
 
     const getdata = async() =>{
@@ -25,6 +42,19 @@ const Dashboard = ({navigation,route}) =>{
         }
 
     }
+
+    const viewbooking = async() => {
+        let resp = await API.getbookingbyuser(id);
+        if (resp.data.status == 1) {
+            sethasbooking(true)
+            setbooking(resp.data.data[0]);
+            setcount(calculate(resp.data.data[0].end_date));
+        } else {
+            sethasbooking(false);
+        }
+        
+    }
+    console.log(calculate(booking.end_date))
     const renderItem = ({item,i}) =>(
         <TouchableOpacity key={i} onPress={()=>navigation.navigate(item.link)}>
             <View style={style.item}>
@@ -35,7 +65,7 @@ const Dashboard = ({navigation,route}) =>{
             </View>
         </TouchableOpacity>
     )
-    console.log(isver)
+ //   console.log(isver)
     return(
         
     <View style={{flex:1,flexDirection:'column',justifyContent:'center',backgroundColor:'white',alignItems:'center'}}>
@@ -53,13 +83,30 @@ const Dashboard = ({navigation,route}) =>{
                     keyExtractor={(val,i)=>i.toString()}
                    />
                    </>
-                    ):(
-                        <FlatList
-                        data={nav}
-                        renderItem={renderItem}
-                        numColumns={3}
-                        keyExtractor={(val,i)=>i.toString()}
-                       />                          
+                        ) : (
+                            <>
+                            <View style={{flex:1,backgroundColor:Color.primary,justifyContent:"center",width:'100%',alignItems:"center"}}>
+                                        <Image source={{ uri: API.baseUrl + booking.pic2 }} style={{width:200,height:200}} resizeMode="cover"/>
+                                        <Text>{booking.brand}</Text>
+                                        {booking.booking_status == 1 && Func.datebetween(booking.start_date,booking.end_date).includes(Func.dateformat(new Date)) &&
+                                                 <Button name="Start Now"  mode='contained' color={Color.secondary} />
+                                            
+                                        }
+                                        <CountDown
+                                        until={count}
+                                        onFinish={() => alert('finished')}
+                                        onPress={() => alert('hello')}
+                                        size={20}
+                                />
+                                        
+                            </View>        
+                            <FlatList
+                            data={nav}
+                            renderItem={renderItem}
+                            numColumns={3}
+                            keyExtractor={(val,i)=>i.toString()}
+                            />         
+                   </>             
                     )}
               </>  
             )  
