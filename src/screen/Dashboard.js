@@ -1,5 +1,6 @@
 import React from 'react'
 import Screen from '../components/Screen';
+import {Headline,Subheading} from 'react-native-paper'
 import {FlatList,StyleSheet,View,Text,TouchableOpacity,Image} from 'react-native'
 import { UserContext } from '../context/Context';
 import API from '../endpoints/API';
@@ -7,6 +8,7 @@ import { Color } from '../utils/Themes';
 import {Button} from '../components/Button';
 import { Func } from '../utils/Func';
 import CountDown from 'react-native-countdown-component';
+import { Pbutton } from '../components/Rbutton';
 
 function calculate(d2)  {
         let date1 = new Date();
@@ -54,7 +56,7 @@ const Dashboard = ({navigation,route}) =>{
         }
         
     }
-    console.log(calculate(booking.end_date))
+    console.log("END DATE",calculate(booking.end_date))
     const renderItem = ({item,i}) =>(
         <TouchableOpacity key={i} onPress={()=>navigation.navigate(item.link)}>
             <View style={style.item}>
@@ -68,44 +70,59 @@ const Dashboard = ({navigation,route}) =>{
  //   console.log(isver)
     return(
         
-    <View style={{flex:1,flexDirection:'column',justifyContent:'center',backgroundColor:'white',alignItems:'center'}}>
+    <View style={{flex:1}}>
           {!isver  ?
             (<Text>Your Account currently verifying by the admin</Text>)
             :
             (
                 <>
                 {isMotourista ? (
-                  <>
+                  <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
                     <FlatList
                     data={navlist}
                     renderItem={renderItem}
                     numColumns={3}
                     keyExtractor={(val,i)=>i.toString()}
                    />
-                   </>
+                   </View>
                         ) : (
                             <>
-                            <View style={{flex:1,backgroundColor:Color.primary,justifyContent:"center",width:'100%',alignItems:"center"}}>
-                                        <Image source={{ uri: API.baseUrl + booking.pic2 }} style={{width:200,height:200}} resizeMode="cover"/>
-                                        <Text>{booking.brand}</Text>
+                            <View style={{flex:1,backgroundColor:Color.color2}}>
+                                        <View style={{padding:10}}>
+                                            <Headline style={style.headline}>{booking.name}</Headline>
+                                            <Subheading style={style.textBlack}>{booking.brand}</Subheading>             
+                                        </View>
+                                                                                
+                                             <CountDown
+
+                                                                                
+                                            until={count}
+                                            onFinish={() => alert('finished')}
+                                            onPress={() => alert('hello')}
+                                            size={20}
+                                            />
+                                       
                                         {booking.booking_status == 1 && Func.datebetween(booking.start_date,booking.end_date).includes(Func.dateformat(new Date)) &&
                                                  <Button name="Start Now"  mode='contained' color={Color.secondary} />
                                             
                                         }
-                                        <CountDown
-                                        until={count}
-                                        onFinish={() => alert('finished')}
-                                        onPress={() => alert('hello')}
-                                        size={20}
-                                />
-                                        
-                            </View>        
+                                    
+                             
+                               
+                            <View style={style.container}>
+                            <View style={style.iamge}>  
+                                <Image source={{uri:API.baseUrl + booking.pic2}} style={{width:'70%',height:200,borderRadius:20}} resizeMode='stretch' resizeMethod='scale'/>
+                            </View>
+                            <Pbutton name="Return Motorcycle"/>
                             <FlatList
                             data={nav}
                             renderItem={renderItem}
                             numColumns={3}
                             keyExtractor={(val,i)=>i.toString()}
-                            />         
+                            />    
+                            </View>     
+                                        
+                            </View>        
                    </>             
                     )}
               </>  
@@ -125,7 +142,28 @@ const style= StyleSheet.create({
         height:120,
         flexDirection:'column',
         alignItems:'center'
-    }  
+    },
+    textBlack:{
+        color:'white',
+    },
+    headline:{
+        color:'white',
+        fontWeight:'bold'
+    },
+    container:{
+        backgroundColor:'white',
+        paddingTop:20,
+        borderTopStartRadius:25,
+        justifyContent:'center',
+        borderTopEndRadius:25,
+        flex:1
+    },
+    iamge:{
+        justifyContent:'center',
+        alignItems:'center',
+        width:'100%',
+        height:200,
+    }
 })
 
 const navlist = [
