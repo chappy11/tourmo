@@ -8,12 +8,28 @@ import { Button } from '../components/Button'
 import RNscreen from '../components/RNscreen'
 import { ip } from '../endpoints/API'
 import Swiper from 'react-native-swiper'
-
+import { UserContext } from '../context/Context'
+import API from '../endpoints/API';
 const ViewMotor = ({ navigation, route }) => {
-    const data = route.params.item
-    
+    const data = route.params.item;
+    const { id,isVer } = React.useContext(UserContext);
+    const [isDisabled, setisDisabled ] = React.useState(false);
     console.log(route.params);
-    
+    React.useEffect(() => {
+        check();
+    },[])
+
+    const check = async() => {
+        let isRent = "";
+        let resp = await API.getprofile(id);
+        isRent = resp.data[0].isRent;
+        if (id == data.user_id || isRent == 1 || isVer == 0) {
+            setisDisabled(true);
+        }
+        
+    }
+
+
     return (
         <RNscreen>
          <ScrollView style={{flex:1}}>
@@ -56,7 +72,7 @@ const ViewMotor = ({ navigation, route }) => {
                     </MapView>
                 </View>
                 <View style={style.container}>
-                    <Button name="Rent this Vehicle" color={Color.primary} mode='contained' onPress={() => navigation.navigate('Create Transaction', { data })}/>
+                    <Button name="Rent this Vehicle" disabled={isDisabled ? true : false} color={Color.primary} mode='contained' onPress={() => navigation.navigate('Create Transaction', { data })}/>
                 </View>
  
         </ScrollView>
