@@ -1,7 +1,8 @@
 import React from 'react'
 import Screen from '../components/Screen';
-import {Caption, Headline,Subheading} from 'react-native-paper'
-import {FlatList,StyleSheet,View,Text,TouchableOpacity,Image} from 'react-native'
+import {Caption, Headline,Subheading,Dialog,TextInput} from 'react-native-paper'
+import {FlatList,StyleSheet,View,Text,TouchableOpacity,Image,Alert} from 'react-native'
+import {Rating} from 'react-native-ratings';
 import { UserContext } from '../context/Context';
 import API from '../endpoints/API';
 import { Color } from '../utils/Themes';
@@ -20,6 +21,10 @@ function calculate(d2)  {
 const Dashboard = ({navigation,route}) =>{
     const { user,id } = React.useContext(UserContext)
     const [isver, setisver] = React.useState(false);
+    const [rate,setrate] = React.useState(3);
+    const [review,setreview] = React.useState("");
+    const [open,setopen] = React.useState(true);
+    const [isReload,setisReload] = React.useState(false);
     const [isMotourista, setisMotourista] = React.useState(false);
     const [booking, setbooking] = React.useState({});
     const [hasbooking, sethasbooking] = React.useState(false);
@@ -27,11 +32,10 @@ const Dashboard = ({navigation,route}) =>{
     const [count, setcount] = React.useState(0);
     React.useLayoutEffect(() => {
         getdata();
-      
-    }, [route])
-    React.useEffect(() => {
+    }, [route,isReload])
+    React.useLayoutEffect(() => {
           viewbooking();
-    },[route,isver])
+    },[route,isver,isMotourista])
 
     const getdata = async() =>{
         let resp = await API.getprofile(user.user_id);
@@ -48,16 +52,88 @@ const Dashboard = ({navigation,route}) =>{
 
     const viewbooking = async() => {
         let resp = await API.getbookingbyuser(id);
-        if (resp.data.status == 1) {
+        console.log("RESPONSE",resp.data);
+        if (resp.status == 1) {
             sethasbooking(true)
-            setbooking(resp.data.data[0]);
-            setcount(calculate(resp.data.data[0].end_date));
-            setonStart(resp.data.data[0].onStart)
+            setbooking(resp.data[0]);
+            setonStart(resp.data[0].onStart);
+            if(resp.data[0].onStart == 1){
+                setcount(calculate(resp.data[0].end_date));
+            }
         } else {
             sethasbooking(false);
         }
         
     }
+
+
+    const cancelbooking =async()=>{
+        try{
+            let resp = await API.cancelbooking(booking.booking_id);
+            if(resp.status == 1){
+                Alert.alert("Success",resp.message);
+                viewbooking();
+            }else{
+                Alert.alert("Error",resp.message);
+            }
+        }catch(err){
+            console.log("ERROR",err);
+        }
+    }
+
+    const startbooking = async()=>{
+        try{
+            let resp = await API.startbooking(booking.booking_id);
+            if(resp.status == 1){
+                Alert.alert("Success",resp.message);
+                viewbooking();
+            }else{
+                Alert.alert("Error",resp.message);
+            }
+        }catch(err){
+            console.log("ERROR",err)
+        }
+    }
+
+    const returnmotorbike = async()=>{
+        try{
+            let resp = await API.returnBooking(booking.booking_id);
+            if(resp.status == 1){
+                Alert.alert("Success",resp.message);
+                viewbooking();
+            }else{
+                Alert.alert("Error",resp.message);
+            }
+        }catch(err){
+            console.log("ERROR",err)
+        }
+    }
+
+    const sendReview = () =>{
+        const payload = {
+            motor_id:1,
+            review:review,
+            rate:rate
+        }
+        try{
+            let res = API.sendReview(payload);
+            if(res.status == 1){
+                setopen(false);
+                viewbooking();
+                Alert.alert("Success","Thank you for rating")
+            }else{
+                Alert.alert("Error","Something went wrong");
+            }
+        }catch(e){
+            console.log("ERROR",e)
+        }
+    }
+
+    const noReview = () =>{
+        viewbooking();
+    }
+    console.log("HASBOOKING",booking);
+
     console.log("END DATE",calculate(booking.end_date))
     const renderItem = ({item,i}) =>(
         <TouchableOpacity key={i} onPress={()=>navigation.navigate(item.link)}>
@@ -136,26 +212,32 @@ const Dashboard = ({navigation,route}) =>{
                                                     </View>
                                                 </View>
                                                 
-                                                <View style={{marginVertical:20}}>
+                                                <View style={{marginVertical:booking.booking_status == 0 ? 20:5}}>
                                                       <Button name="View Mourista Info" color={Color.primary}/>
                                                 </View>
-                                              
-                                                    {booking.booking_status == 1 && Func.datebetween(booking.start_date, booking.end_date).includes(Func.dateformat(new Date)) &&
-                                                    <>
-                                                        {booking.onStart == 0 ?
-                                                            (
-                                                                <>
-                                                                    <Text style={{color:Color.color1,textAlign:'center',paddingVertical:10 }}>Click the Start so that the will start</Text>
-                                                                    <Pbutton name="Start Now" />
-                                                                </>
-                                                                    )
-                                                        :
-                                                        ( <Pbutton name="Return Motorcycle" />)
-                                                        }
-                                                    </>
+                                                    {booking.booking_status == 0 ? 
+                                                        (<Button name="Cancel Booking" color={Color.danger} onPress={cancelbooking}/>) :
+                                                        (<>
+                                                                       {booking.booking_status == 1 && Func.datebetween(booking.start_date, booking.end_date).includes(Func.dateformat(new Date)) &&
+                                                                                <>
+                                                                                    {booking.onStart == 0 ?
+                                                                                        (
+                                                                                            <>
+                                                                                                <Text style={{color:Color.color1,textAlign:'center',paddingVertical:10 }}>Click the Start so that the will start</Text>
+                                                                                                <Pbutton name="Start Now" onPress={startbooking} />
+                                                                                            </>
+                                                                                                )
+                                                                                            :
+                                                                                    ( <Pbutton name="Return Motorcycle" onPress={returnmotorbike}/>)
+                                                                                    }
+                                                                                </>
                                                  
-                                                 }
-                                               
+                                                                         }
+                                                      
+                                                        </>)
+
+                                                    }
+                                                 
                                                 </View>
                             </View>  
                                        
@@ -192,7 +274,27 @@ const Dashboard = ({navigation,route}) =>{
                     )}
               </>  
             )  
+
         }
+        <Dialog visible={open} >
+            <Dialog.Title>
+                Rate your experience
+            </Dialog.Title>
+            <Dialog.Content>
+                <Rating
+                    count={5}
+                    showRating
+                    defaultRating={2}
+                    size={18}
+                    onFinishRating={(e=>setrate(e))}
+                />
+                <TextInput placeholder="Your Comment" onChangeText={(e)=>setreview(e)} style={{backgroundColor:'white',marginTop:20}}/>
+            </Dialog.Content>
+            <Dialog.Actions>
+                <Button name="Confirm" onPress={sendReview} color={Color.color1}/>
+                <Button name="No, Thanks" onPress={noReview} color={Color.danger}/>
+            </Dialog.Actions>
+        </Dialog>
             
    </View>
         

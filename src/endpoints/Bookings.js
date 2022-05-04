@@ -27,6 +27,33 @@ export default  {
     },
     getbookingbyuser: async (id) => {
         let resp = await Axios.get(ip + "booking/getbyuser/" + id);
-        return resp;
+        return resp.data;
+    },
+    cancelbooking: async(booking_id) =>{
+        let resp = await Axios.post(ip+ "booking/cancelbooking/"+booking_id)
+        return resp.data;
+    },
+    startbooking: async(booking_id) =>{
+        let resp = await Axios.post(ip + "booking/startbooking/"+booking_id);
+        return resp.data;
+    },
+    returnBooking: async(booking_id) =>{
+        let resp = await Axios.post(ip + "booking/returnMotor/"+booking_id);
+        return resp.data;
+    },
+    confirmReturn: async(booking_id) =>{
+        let resp = await Axios.post(ip+"booking/confirmReturn/"+booking_id);
+        return resp.data;
+    },
+    declinebooking: async(booking_id) =>{
+        let resp = await Axios.post(ip+"booking/declinebooking/"+booking_id);
+        return resp.data;
+    },
+    sendReview: async(payload) =>{
+        const headers ={
+            "Content-Type":"text/plain"
+        }
+        let resp = await Axios.post(ip+"review/review",payload,{headers});
+        return resp.data;
     }
 }
