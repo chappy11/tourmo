@@ -1,6 +1,6 @@
 import React from 'react'
 import Screen from '../components/Screen';
-import {Headline,Subheading} from 'react-native-paper'
+import {Caption, Headline,Subheading} from 'react-native-paper'
 import {FlatList,StyleSheet,View,Text,TouchableOpacity,Image} from 'react-native'
 import { UserContext } from '../context/Context';
 import API from '../endpoints/API';
@@ -23,6 +23,7 @@ const Dashboard = ({navigation,route}) =>{
     const [isMotourista, setisMotourista] = React.useState(false);
     const [booking, setbooking] = React.useState({});
     const [hasbooking, sethasbooking] = React.useState(false);
+    const [onStart, setonStart] = React.useState(0);
     const [count, setcount] = React.useState(0);
     React.useLayoutEffect(() => {
         getdata();
@@ -51,6 +52,7 @@ const Dashboard = ({navigation,route}) =>{
             sethasbooking(true)
             setbooking(resp.data.data[0]);
             setcount(calculate(resp.data.data[0].end_date));
+            setonStart(resp.data.data[0].onStart)
         } else {
             sethasbooking(false);
         }
@@ -86,44 +88,107 @@ const Dashboard = ({navigation,route}) =>{
                    />
                    </View>
                         ) : (
-                            <>
-                            <View style={{flex:1,backgroundColor:Color.color2}}>
+                         <>
+                        {hasbooking ? (
+                                      <View style={{flex:1,backgroundColor:Color.color2}}>
                                         <View style={{padding:10}}>
                                             <Headline style={style.headline}>{booking.name}</Headline>
                                             <Subheading style={style.textBlack}>{booking.brand}</Subheading>             
                                         </View>
-                                                                                
-                                             <CountDown
-
-                                                                                
-                                            until={count}
-                                            onFinish={() => alert('finished')}
-                                            onPress={() => alert('hello')}
-                                            size={20}
-                                            />
+                                            {onStart == 1 &&                         
+                                                <CountDown                                    
+                                                until={count}
+                                                onFinish={() => alert('finished')}
+                                                onPress={() => alert('hello')}
+                                                size={20}
+                                                />
+                                            }
                                        
-                                        {booking.booking_status == 1 && Func.datebetween(booking.start_date,booking.end_date).includes(Func.dateformat(new Date)) &&
-                                                 <Button name="Start Now"  mode='contained' color={Color.secondary} />
-                                            
-                                        }
+                                       
                                     
                              
                                
                             <View style={style.container}>
-                            <View style={style.iamge}>  
-                                <Image source={{uri:API.baseUrl + booking.pic2}} style={{width:'70%',height:200,borderRadius:20}} resizeMode='stretch' resizeMethod='scale'/>
-                            </View>
-                            <Pbutton name="Return Motorcycle"/>
-                            <FlatList
-                            data={nav}
-                            renderItem={renderItem}
-                            numColumns={3}
-                            keyExtractor={(val,i)=>i.toString()}
-                            />    
-                            </View>     
+                                    <View style={style.iamge}>  
+                                        <Image source={{uri:API.baseUrl + booking.pic2}} style={{width:'70%',height:200,borderRadius:20}} resizeMode='stretch' resizeMethod='scale'/>
+                                    </View>
+                                         
                                         
-                            </View>        
-                   </>             
+                                             <View style={style.container2}>
+                                                <View style={{flexDirection:'row',}}>
+                                                    <View style={{flex:1}}>
+                                                        <Caption style={{color:Color.color1}}>Start Date</Caption>
+                                                        <Text style={{ color: Color.color1,fontSize:20 }}>{booking.start_date}</Text>
+                                                    </View>
+                                                        <View>
+                                                        <Caption style={{color:Color.color1}}>End Date</Caption>
+                                                        <Text style={{ color: Color.color1,fontSize:20 }}>{booking.start_date}</Text>
+                                                    </View>
+                                                </View>
+                                                  <View style={{flexDirection:'row',}}>
+                                                    <View style={{ flex: 1 }}>
+                                                        <Caption style={{color:Color.color1}}>Fee</Caption>
+                                                        <Text style={{ color: Color.color1, fontSize: 20 }}>{"Php "+booking.total_amount}</Text>
+                                                    </View>
+                                                        <View>
+                                                        <Caption style={{color:Color.color1}}>Owner Name</Caption>
+                                                        <Text style={{ color: Color.color1,fontSize:20 }}>{booking.firstname+" "+booking.lastname}</Text>
+                                                    </View>
+                                                </View>
+                                                
+                                                <View style={{marginVertical:20}}>
+                                                      <Button name="View Mourista Info" color={Color.primary}/>
+                                                </View>
+                                              
+                                                    {booking.booking_status == 1 && Func.datebetween(booking.start_date, booking.end_date).includes(Func.dateformat(new Date)) &&
+                                                    <>
+                                                        {booking.onStart == 0 ?
+                                                            (
+                                                                <>
+                                                                    <Text style={{color:Color.color1,textAlign:'center',paddingVertical:10 }}>Click the Start so that the will start</Text>
+                                                                    <Pbutton name="Start Now" />
+                                                                </>
+                                                                    )
+                                                        :
+                                                        ( <Pbutton name="Return Motorcycle" />)
+                                                        }
+                                                    </>
+                                                 
+                                                 }
+                                               
+                                                </View>
+                            </View>  
+                                       
+                                        
+                                     </View>    
+                                    ): (
+                                        <View style={{flex:1,backgroundColor:Color.color2}}>
+                                            <View style={{padding:20}}>
+                                                  <Headline style={style.headline}>Dash Board</Headline>
+                                            </View>
+                                            <View style={style.contain}>
+                                                    <View style={{flex:1,alignItems:'center'}}>
+                                                                   <Image source={require("../../asset/no_booking.png")} style={{ width: 200, height: 200 }} />
+                                                                 <Subheading style={{fontWeight:'bold',fontSize:18}}>You Dont have current booking</Subheading>
+                                                    </View>
+                                             
+                                                    <View style={{flex:1,marginVertical:20,marginHorizontal:20}}>
+                                                    <FlatList
+                                                        data={nav}
+                                                        keyExtractor={(va, i) => i.toString()}
+                                                        renderItem={renderItem}
+                                                        numColumns={3}
+                                                    />    
+                                                    </View>    
+                                            </View>
+                                               
+                                        </View>        
+                                    )
+                                        
+                            }
+                            
+                              
+                         </>             
                     )}
               </>  
             )  
@@ -150,12 +215,21 @@ const style= StyleSheet.create({
         color:'white',
         fontWeight:'bold'
     },
+    contain: {
+          backgroundColor:'white',
+        paddingTop:20,
+        marginTop:10,
+        borderTopStartRadius: 25,
+        borderTopEndRadius: 25,
+        flex:1
+    },
     container:{
         backgroundColor:'white',
         paddingTop:20,
-        borderTopStartRadius:25,
+        marginTop:10,
+        borderTopStartRadius: 25,
+        borderTopEndRadius: 25,
         justifyContent:'center',
-        borderTopEndRadius:25,
         flex:1
     },
     iamge:{
@@ -163,6 +237,17 @@ const style= StyleSheet.create({
         alignItems:'center',
         width:'100%',
         height:200,
+    },
+    container2: {
+        flex: 1,
+        marginTop:10,
+        paddingTop: 10,
+        borderTopStartRadius: 25,
+        backgroundColor: Color.color2,
+        paddingHorizontal: 20,
+        borderRadius: 25,
+        marginHorizontal: 10,
+        marginBottom:5
     }
 })
 
@@ -192,4 +277,8 @@ const nav = [
         name:"Transaction History",
         image:require("../../asset/icon/transactionhistory.png")
     },
+    {
+        name: "Favorites",
+        image: require("../../asset/fab.png")
+    }
 ];
