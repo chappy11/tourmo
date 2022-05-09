@@ -5,7 +5,7 @@ import {StyleSheet} from 'react-native';
 
 
 export const Pbutton = (props) =>(
-    <Button mode='contained' {...props} onPress={props.onPress} contentStyle={style.button} color={Color.color1} labelStyle={{color:'white'}} >{props.name}</Button>
+    <Button mode='contained' {...props} onPress={props.onPress} style={style.button} contentStyle={style.button} color={Color.color1} labelStyle={{color:'black'}} >{props.name}</Button>
 )
 
 export const Sbutton = () =>{
@@ -14,6 +14,6 @@ export const Sbutton = () =>{
 
 const style = StyleSheet.create({
     button:{
-        padding:10
+        padding:5
     }
 })

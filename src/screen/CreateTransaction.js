@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet,TouchableOpacity,Image,Alert,ScrollView } from 'react-native'
 import React,{useState} from 'react'
+import { StackActions } from '@react-navigation/native'
 import RNscreen from '../components/RNscreen'
 import { Caption, Dialog, Headline, Modal, Portal,} from 'react-native-paper'
 import { Button } from '../components/Button'
@@ -24,7 +25,7 @@ function getmark(arr) {
 }
 
 
-const CreateTransaction = ({route}) => {
+const CreateTransaction = ({route,navigation}) => {
   const { user } = React.useContext(UserContext);
   const [isLoad, setisLoad] = React.useState(false);
   const params = route.params.data;
@@ -121,6 +122,7 @@ const CreateTransaction = ({route}) => {
       API.createBookings(payload).then(res => {
         if (res.data.status === 1) {
           Alert.alert("Success", res.data.message);
+          navigation.popToTop();
         } else {
           Alert.alert("Error", res.data.message);
         }

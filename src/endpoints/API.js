@@ -1,5 +1,7 @@
 import axios from 'axios'
 import Bookings from './Bookings';
+import Favorite from './Favorite';
+import History from './History';
 import Moutorista from './Moutorista';
 import Vehicle from './Vehicle';
 export const ip = "http://192.168.1.18/tourmo/";
@@ -55,8 +57,20 @@ export  default {
         }
         return axios.post(ip + "user/changepass", payload, { headers });
     },
-
+    getnotif: async(user_id) =>{
+        let resp = await axios.get(ip+"notification/getnotifbyuser/"+user_id);
+        return resp.data;
+    },
+    read:async(payload)=>{
+        const headers = {
+            "Content-Type" : "text/plain"
+        }
+        let resp = await axios.post(ip + "notification/read",payload,{headers});
+        return resp.data;
+    },
+    ...Favorite,
     ...Moutorista,
      ...Vehicle,
-     ...Bookings
-}
+     ...Bookings,
+     ...History
+    }

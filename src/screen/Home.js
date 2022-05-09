@@ -6,12 +6,13 @@ import { motors } from '../../data/motor'
 import { Color } from '../utils/Themes'
 import { Headline, Title } from 'react-native-paper'
 import { Button } from '../components/Button'
-import { AuthContext } from '../context/Context'
+import { AuthContext, NotifContext } from '../context/Context'
 import RNscreen from '../components/RNscreen'
 import API, { ip } from '../endpoints/API'
 import Geolocation from '@react-native-community/geolocation'
 import { getDistance } from 'geolib';
 const Home = ({ navigation,route }) => {
+  const {count} = React.useContext(NotifContext);
   const [location, setlocation] = React.useState({
     latitude: 0,
     longitude:0

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet,Image,ScrollView } from 'react-native'
+import { View, Text, StyleSheet,Image,ScrollView,Alert} from 'react-native'
 import React from 'react'
 import Screen from '../components/Screen'
 import { Color } from '../utils/Themes'
@@ -10,23 +10,54 @@ import { ip } from '../endpoints/API'
 import Swiper from 'react-native-swiper'
 import { UserContext } from '../context/Context'
 import API from '../endpoints/API';
+import { Pbutton } from '../components/Rbutton'
 const ViewMotor = ({ navigation, route }) => {
     const data = route.params.item;
     const { id,isVer } = React.useContext(UserContext);
     const [isDisabled, setisDisabled ] = React.useState(false);
+    const [isFav,setisFav] = React.useState(false);
     console.log(route.params);
     React.useEffect(() => {
         check();
-    },[])
+    },[route])
 
+    React.useEffect(()=>{
+        checkfav();
+    },[route])
+    
+    const checkfav = async() =>{
+        try{
+            let resp = await API.checkfav(id,data.motor_id);
+            if(resp.status == 1){
+                setisFav(true)
+            }else{
+                setisFav(false);
+            }
+        }catch(e){
+            console.log(e)
+        }
+    }
+    
     const check = async() => {
         let isRent = "";
         let resp = await API.getprofile(id);
         isRent = resp.data[0].isRent;
         if (id == data.user_id || isRent == 1 || isVer == 0) {
             setisDisabled(true);
+        }        
+    }
+
+    const addtofav = async () =>{
+        try{
+            let res = await API.addtofav(id,data.motor_id);
+            if(res.status == 1){
+                Alert.alert("Success",res.message);
+            }else{
+                Alert.alert("Error",res.message)
+            }
+        }catch(e){
+            console.log(e)
         }
-        
     }
 
 
@@ -70,6 +101,14 @@ const ViewMotor = ({ navigation, route }) => {
                         />
                        
                     </MapView>
+                </View>
+                <View style={style.container}>
+                    {!isFav ?
+                        ( <Pbutton name="Add To Favorite" onPress={addtofav}/>)
+                        :
+                        ( <Pbutton name="Remove To Favorite"/>)
+                    }
+                   
                 </View>
                 <View style={style.container}>
                     <Button name="Rent this Vehicle" disabled={isDisabled ? true : false} color={Color.primary} mode='contained' onPress={() => navigation.navigate('Create Transaction', { data })}/>

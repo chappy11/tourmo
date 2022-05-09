@@ -15,17 +15,18 @@ function calculate(d2)  {
         let date1 = new Date();
         let date2 = new Date(d2);
         var dif = (date2.getTime() - date1.getTime()) / 1000;
-    return dif;
+        return dif;
     }
 
 const Dashboard = ({navigation,route}) =>{
+  
     const { user,id } = React.useContext(UserContext)
     const [isver, setisver] = React.useState(false);
     const [rate,setrate] = React.useState(3);
     const [review,setreview] = React.useState("");
-    const [open,setopen] = React.useState(true);
+    const [open,setopen] = React.useState(false);
     const [isReload,setisReload] = React.useState(false);
-    const [isMotourista, setisMotourista] = React.useState(false);
+    const [isMotourista,setisMotourista] = React.useState(false);
     const [booking, setbooking] = React.useState({});
     const [hasbooking, sethasbooking] = React.useState(false);
     const [onStart, setonStart] = React.useState(0);
@@ -100,6 +101,7 @@ const Dashboard = ({navigation,route}) =>{
             let resp = await API.returnBooking(booking.booking_id);
             if(resp.status == 1){
                 Alert.alert("Success",resp.message);
+                setopen(true);
                 viewbooking();
             }else{
                 Alert.alert("Error",resp.message);
@@ -109,18 +111,19 @@ const Dashboard = ({navigation,route}) =>{
         }
     }
 
-    const sendReview = () =>{
+    const sendReview = async() =>{
         const payload = {
             motor_id:1,
             review:review,
             rate:rate
         }
         try{
-            let res = API.sendReview(payload);
+            let res = await API.sendReview(payload);
+            console.log("REVIEW",res);
             if(res.status == 1){
                 setopen(false);
                 viewbooking();
-                Alert.alert("Success","Thank you for rating")
+                Alert.alert("Success","Thank you for rating");
             }else{
                 Alert.alert("Error","Something went wrong");
             }
@@ -145,134 +148,49 @@ const Dashboard = ({navigation,route}) =>{
             </View>
         </TouchableOpacity>
     )
- //   console.log(isver)
+ //   console.log(isver);
     return(
         
-    <View style={{flex:1}}>
+    <View style={{flex:1,backgroundColor:Color.color2}}>
+        <View style={{padding:10,marginTop:10}}>
+                <Headline style={style.headline}>Dashboard</Headline>
+        </View>
+       
+        <View style={style.container}>
           {!isver  ?
             (<Text>Your Account currently verifying by the admin</Text>)
             :
-            (
+            ( 
                 <>
-                {isMotourista ? (
-                  <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                    <View style={{padding:10}}>
+                        <Headline>Tourista</Headline>
+                    </View>
                     <FlatList
-                    data={navlist}
-                    renderItem={renderItem}
-                    numColumns={3}
-                    keyExtractor={(val,i)=>i.toString()}
-                   />
-                   </View>
-                        ) : (
-                         <>
-                        {hasbooking ? (
-                                      <View style={{flex:1,backgroundColor:Color.color2}}>
-                                        <View style={{padding:10}}>
-                                            <Headline style={style.headline}>{booking.name}</Headline>
-                                            <Subheading style={style.textBlack}>{booking.brand}</Subheading>             
-                                        </View>
-                                            {onStart == 1 &&                         
-                                                <CountDown                                    
-                                                until={count}
-                                                onFinish={() => alert('finished')}
-                                                onPress={() => alert('hello')}
-                                                size={20}
-                                                />
-                                            }
-                                       
-                                       
-                                    
-                             
-                               
-                            <View style={style.container}>
-                                    <View style={style.iamge}>  
-                                        <Image source={{uri:API.baseUrl + booking.pic2}} style={{width:'70%',height:200,borderRadius:20}} resizeMode='stretch' resizeMethod='scale'/>
-                                    </View>
-                                         
-                                        
-                                             <View style={style.container2}>
-                                                <View style={{flexDirection:'row',}}>
-                                                    <View style={{flex:1}}>
-                                                        <Caption style={{color:Color.color1}}>Start Date</Caption>
-                                                        <Text style={{ color: Color.color1,fontSize:20 }}>{booking.start_date}</Text>
-                                                    </View>
-                                                        <View>
-                                                        <Caption style={{color:Color.color1}}>End Date</Caption>
-                                                        <Text style={{ color: Color.color1,fontSize:20 }}>{booking.start_date}</Text>
-                                                    </View>
-                                                </View>
-                                                  <View style={{flexDirection:'row',}}>
-                                                    <View style={{ flex: 1 }}>
-                                                        <Caption style={{color:Color.color1}}>Fee</Caption>
-                                                        <Text style={{ color: Color.color1, fontSize: 20 }}>{"Php "+booking.total_amount}</Text>
-                                                    </View>
-                                                        <View>
-                                                        <Caption style={{color:Color.color1}}>Owner Name</Caption>
-                                                        <Text style={{ color: Color.color1,fontSize:20 }}>{booking.firstname+" "+booking.lastname}</Text>
-                                                    </View>
-                                                </View>
-                                                
-                                                <View style={{marginVertical:booking.booking_status == 0 ? 20:5}}>
-                                                      <Button name="View Mourista Info" color={Color.primary}/>
-                                                </View>
-                                                    {booking.booking_status == 0 ? 
-                                                        (<Button name="Cancel Booking" color={Color.danger} onPress={cancelbooking}/>) :
-                                                        (<>
-                                                                       {booking.booking_status == 1 && Func.datebetween(booking.start_date, booking.end_date).includes(Func.dateformat(new Date)) &&
-                                                                                <>
-                                                                                    {booking.onStart == 0 ?
-                                                                                        (
-                                                                                            <>
-                                                                                                <Text style={{color:Color.color1,textAlign:'center',paddingVertical:10 }}>Click the Start so that the will start</Text>
-                                                                                                <Pbutton name="Start Now" onPress={startbooking} />
-                                                                                            </>
-                                                                                                )
-                                                                                            :
-                                                                                    ( <Pbutton name="Return Motorcycle" onPress={returnmotorbike}/>)
-                                                                                    }
-                                                                                </>
-                                                 
-                                                                         }
-                                                      
-                                                        </>)
+                            data={nav}
+                            renderItem={renderItem}
+                            numColumns={3}
+                            keyExtractor={(val,i)=>i.toString()}
+                        />
+                    {isMotourista &&
+                        <>
+                            <View style={{padding:10}}>
+                                <Headline>Motourista</Headline>
+                            </View>
 
-                                                    }
-                                                 
-                                                </View>
-                            </View>  
-                                       
-                                        
-                                     </View>    
-                                    ): (
-                                        <View style={{flex:1,backgroundColor:Color.color2}}>
-                                            <View style={{padding:20}}>
-                                                  <Headline style={style.headline}>Dash Board</Headline>
-                                            </View>
-                                            <View style={style.contain}>
-                                                    <View style={{flex:1,alignItems:'center'}}>
-                                                                   <Image source={require("../../asset/no_booking.png")} style={{ width: 200, height: 200 }} />
-                                                                 <Subheading style={{fontWeight:'bold',fontSize:18}}>You Dont have current booking</Subheading>
-                                                    </View>
-                                             
-                                                    <View style={{flex:1,marginVertical:20,marginHorizontal:20}}>
-                                                    <FlatList
-                                                        data={nav}
-                                                        keyExtractor={(va, i) => i.toString()}
-                                                        renderItem={renderItem}
-                                                        numColumns={3}
-                                                    />    
-                                                    </View>    
-                                            </View>
-                                               
-                                        </View>        
-                                    )
-                                        
-                            }
-                            
-                              
-                         </>             
-                    )}
-              </>  
+                            <FlatList
+                                data={navlist}
+                                renderItem={renderItem}
+                                numColumns={3}
+                                keyExtractor={(val,i)=>i.toString()}
+                            />    
+                        </>
+
+                    }
+                    
+                   </View>  
+              </>
+                
             )  
 
         }
@@ -295,7 +213,7 @@ const Dashboard = ({navigation,route}) =>{
                 <Button name="No, Thanks" onPress={noReview} color={Color.danger}/>
             </Dialog.Actions>
         </Dialog>
-            
+        </View>
    </View>
         
     );
@@ -361,26 +279,35 @@ const navlist = [
     },
     {
         name:"Transaction History",
-        image:require("../../asset/icon/transactionhistory.png")
+        image:require("../../asset/icon/transactionhistory.png"),
+        link:"Transaction History"
     },
     {
-        name:"List of Bookings",
+        name:"Pending Bookings",
         image:require("../../asset/icon/bookings.png"),
         link:"List Of Bookings"
     },
     {
-        name:"My Bookings",
+        name:"On Going Bookings",
         image:require("../../asset/icon/mybookings.png"),
+        link:"On Going"
     }
 ]
 
 const nav = [
     {
         name:"Transaction History",
-        image:require("../../asset/icon/transactionhistory.png")
+        image:require("../../asset/icon/transactionhistory.png"),
+        link:"Transaction History"      
+    },
+    {
+        name:"Active Booking",
+        image:require("../../asset/icon/transactionhistory.png"),
+        link:"Active Booking",
     },
     {
         name: "Favorites",
-        image: require("../../asset/fab.png")
+        image: require("../../asset/fab.png"),
+        link:"Favorite"
     }
 ];

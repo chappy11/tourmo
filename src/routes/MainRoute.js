@@ -21,6 +21,13 @@ import UpdateMoutorista from '../screen/moutorista/UpdateMoutorista';
 import { Listofbookings } from '../screen/dashboard/Listofbookings';
 import ViewBooking from '../screen/dashboard/ViewBooking';
 import UpdateVehicle from '../screen/vehicle/UpdateVehicle';
+import Ongoing from '../screen/dashboard/Ongoing';
+import ConfirmReturn from '../screen/dashboard/ConfirmReturn';
+import ActiveBooking from '../screen/dashboard/ActiveBooking';
+import TransactionHistory from '../screen/dashboard/TransactionHistory';
+import ViewHistory from '../screen/dashboard/ViewHistory';
+import ViewNotification from '../screen/notification/ViewNotification';
+import Favorite from '../screen/Favorites';
 const MainStack = createNativeStackNavigator();
 
 // export const MainRoute = () => (
@@ -61,7 +68,14 @@ export const DashboardRoute = () =>(
         <DashBoardRouteStack.Screen name="Dashboard" component={Dashboard}/>
         <DashBoardRouteStack.Screen name="VehicleRoute" component={VehicleRoute}/>
         <DashBoardRouteStack.Screen name="List Of Bookings" component={ListofBookings}/>
+        <DashBoardRouteStack.Screen name="On Going" component={Ongoing}/>
+        <DashBoardRouteStack.Screen name="Active Booking" component={ActiveBooking}/>
+        <DashBoardRouteStack.Screen name="Confirm Return" component={ConfirmReturn}/>
+        <DashBoardRouteStack.Screen name="Transaction History" component={TransactionHistory}/>
+        <DashBoardRouteStack.Screen name="View History" component={ViewHistory}/>
+        <DashBoardRouteStack.Screen name="Favorite"  component={Favorite}/>
     </DashBoardRouteStack.Navigator>
+
 )
 
 
@@ -94,8 +108,9 @@ export const HomeRoute = () => (
 const NotificationStack = createNativeStackNavigator();
 
 export const NotificationRoute = ()=> (
-    <NotificationStack.Navigator>
+    <NotificationStack.Navigator screenOptions={{headerShown:false}}>
         <NotificationStack.Screen name="notification" component={Notification}/>
+        <NotificationStack.Screen name="View Notification" component={ViewNotification}/>
     </NotificationStack.Navigator>
 );
 

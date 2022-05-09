@@ -1,6 +1,7 @@
 import React from 'react'
 import RNscreen from '../../components/RNscreen';
 import { Text,StyleSheet,ScrollView,View,Alert } from 'react-native';
+import { StackActions } from '@react-navigation/native';
 import Card from '../../components/Card';
 import { Avatar, Caption, Headline, Subheading } from 'react-native-paper';
 import API, { ip } from '../../endpoints/API';
@@ -9,11 +10,12 @@ import { Color } from '../../utils/Themes';
 import { NavigationContainer } from '@react-navigation/native';
 const ViewBooking = ({route,navigation}) => {
     const data = route.params;
-    
+    const popAction = StackActions.pop(1);
     const accept = () =>{
         API.acceptbooking(data.booking_id).then(res=>{
             if(res.status == 1){
                 Alert.alert("Success",res.message,[{text:"Okay",onPress:()=>navigation.push("List of Bookings")}]);
+                navigation.dispatch(popAction);
             }else{
                 Alert.alert("Error",res.message)
             }

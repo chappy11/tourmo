@@ -12,8 +12,9 @@ import { StyleSheet,View } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { AuthRoute, MainRoute, UnauthRoute } from './src/routes/MainRoute';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AuthContext, UserContext } from './src/context/Context';
+import { AuthContext, NotifContext, UserContext } from './src/context/Context';
 import Loading from './src/screen/Loading';
+import API from './src/endpoints/API';
 
 
 const App = () => {
@@ -23,6 +24,7 @@ const App = () => {
   const [user,setuser] = useState(null);
   const [email, setemail] = useState("");
   const [isVer, setisVer] = useState(null);
+  const [count,setcount] = useState(0);
   const authContext = useMemo(
     () => ({
       signIn: (id,data,isVer) => {
@@ -42,6 +44,10 @@ const App = () => {
          setisload(false);
         AsyncStorage.clear();
       },
+      getnotif:async(id)=>{
+        let data = await API.getnotif(id);
+        setcount(data.count)
+      }
      
     }),
     [],
@@ -49,6 +55,7 @@ const App = () => {
  
 console.ignoredYellowBox = ["Warning: Each", "Warning: Failed"];
   useEffect(() => {
+    
     AsyncStorage.getItem("id")
       .then(res => {
         setid(res);
@@ -79,8 +86,12 @@ console.ignoredYellowBox = ["Warning: Each", "Warning: Failed"];
          {id === null ?
             <UnauthRoute/>
           :(
+
             <UserContext.Provider value={{id,user,isVer}}>
-                <AuthRoute/>
+              <NotifContext.Provider value={{count}}>
+                  <AuthRoute/>
+              </NotifContext.Provider>
+               
             </UserContext.Provider>
           )
             

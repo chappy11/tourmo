@@ -52,7 +52,7 @@ const style = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: Color.primary
+        backgroundColor: Color.color1
     },
     grid: {
         flex: 1,

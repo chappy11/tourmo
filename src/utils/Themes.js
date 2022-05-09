@@ -6,7 +6,7 @@ export const Color = {
     danger: '#ED5564',
     white: '#fefefe',
     black:'#F000',
-    color1:"#FFD100",
-    color2:"#252525",
+    color1:"#fbc02d",
+    color2:"#2D2E2D",
     
 }

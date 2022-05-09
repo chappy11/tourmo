@@ -55,5 +55,18 @@ export default  {
         }
         let resp = await Axios.post(ip+"review/review",payload,{headers});
         return resp.data;
+    },
+    ongoing: async(owner_id) =>{
+        let resp = await Axios.get(ip+"booking/getongoing/"+owner_id);
+        return resp.data;
+    },
+    tourista: async(booking_id) =>{
+        let resp = await Axios.get(ip+"booking/tourista/"+booking_id);
+        return resp.data;
+    },
+    motourista: async(booking_id) =>{
+        let resp = await Axios.get(ip+"booking/motourista/"+booking_id);
+        return resp.data;
     }
+
 }
