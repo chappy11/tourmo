@@ -17,9 +17,14 @@ const ViewHistory = ({route}) =>{
                         <Title style={{color:'white'}}>{data.ref_no}</Title>
                 </View>
                 <View style={style.container2}>
-                        {data.his_type == 1 || data.his_type == 2 &&
+                        {data.his_type == 1  &&
                             <Tourista booking_id={data.booking_id} type={data.his_type}/>
                         }
+
+                        {data.his_type == 2  &&
+                            <Tourista booking_id={data.booking_id} type={data.his_type}/>
+                        }
+
                 </View>
             </View>
         </RNscreen>
@@ -34,25 +39,38 @@ export const Tourista = ({booking_id,type}) =>{
     
     React.useEffect(()=>{
         getdata();
-    },[])
+    },[type])
     
     const getdata = async() =>{
-        try{
-            let res = await API.tourista(booking_id);
-            console.log("USER DATA",res);
-            if(res.status == 1){
-                setdata(res.data[0]);
+        if(type == 1){
+            try{
+                let res = await API.tourista(booking_id);
+                console.log("USER DATA",res);
+                if(res.status == 1){
+                    setdata(res.data[0]);
+                }
+            }catch(e){
+                console.log(e)
             }
-        }catch(e){
-            console.log(e)
+        }else{
+            try{
+                let res = await API.motourista(booking_id);
+                console.log("USER DATA",res);
+                if(res.status == 1){
+                    setdata(res.data[0]);
+                }
+            }catch(e){
+                console.log(e)
+            }
         }
+        
     }
     console.log("TYPE",type)
     return(
         <View style={{paddingVertical:15,paddingHorizontal:20}}>
             <View style={{marginVertical:5}}>
                 <Caption>Tourista</Caption>
-                <Text style={{color:'black',fontSize:15}}>{user.firstname+" "+user.middlename+" "+user.lastname}</Text>
+                <Text style={{color:'black',fontSize:15}}>{type == 1 ? (user.firstname+" "+user.middlename+" "+user.lastname):(data.firstname+" "+data.middlename+" "+data.lastname)}</Text>
             </View>
             <View style={{marginVertical:5}}>
                 <Caption>Motourista</Caption>
@@ -60,7 +78,7 @@ export const Tourista = ({booking_id,type}) =>{
             </View>
             <View style={{marginVertical:5}}>
                 <Caption>Motourista Owner</Caption>
-                <Text style={{color:'black',fontSize:15}}>{data.firstname+" "+data.middlename+" "+data.lastname}</Text>
+                <Text style={{color:'black',fontSize:15}}>{type == 1 ? data.firstname+" "+data.middlename+" "+data.lastname : user.firstname+" "+user.middlename+" "+user.lastname}</Text>
             </View>
             <View style={{marginVertical:5}}>
                 <Caption>Motorbike</Caption>

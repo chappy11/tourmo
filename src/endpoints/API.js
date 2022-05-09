@@ -4,12 +4,14 @@ import Favorite from './Favorite';
 import History from './History';
 import Moutorista from './Moutorista';
 import Vehicle from './Vehicle';
-export const ip = "http://192.168.1.18/tourmo/";
+
+export const ip = "http://192.168.1.16/tourmo/";
 //export const ip = "http://192.168.1.6/tourmo/";
 
 
 export  default {
     baseUrl:ip,
+    address:"192.168.1.16",
     sendEmail: async payload =>{
         const headers = {
             "Content-Type" : "text/plain"

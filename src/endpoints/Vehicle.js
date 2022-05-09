@@ -38,5 +38,13 @@ export default {
             "Content-Type" : "multipart/form-data"
         }
         return axios.post(ip+"vehicle/update",payload,{headers});
+    },
+    activate:async(vehicle_id)=>{
+        let resp = await axios.post(ip+"vehicle/activate/"+vehicle_id);
+        return resp.data;
+    },
+    deactivate:async(vehicle_id) =>{
+        let resp = await axios.post(ip+"vehicle/deactivate/"+vehicle_id);
+        return resp.data;
     }
 }

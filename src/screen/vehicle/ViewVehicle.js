@@ -1,13 +1,14 @@
 import React from 'react'
 import Swiper from "react-native-swiper";
 import Card from "../../components/Card";
-import {Image,View,Text,ScrollView} from 'react-native'
+import {Image,View,Text,ScrollView,Alert} from 'react-native'
 import RNscreen from "../../components/RNscreen";
 import API from '../../endpoints/API';
 import { Caption, Subheading, Title } from 'react-native-paper';
 import { Button } from '../../components/Button';
 import { Color } from '../../utils/Themes';
 import { useEffect } from 'react';
+import { Pbutton } from '../../components/Rbutton';
 
 const ViewVehicle = ({navigation,route}) =>{
     
@@ -23,12 +24,33 @@ const ViewVehicle = ({navigation,route}) =>{
         console.log("MYRESPONSE",resp)
         setmotor(resp.data)
     }
+
+    const activated = async()=>{
+        let resp = await API.activate(motor.motor_id);
+        if(resp.status == 1){
+            getdata();
+            Alert.alert("Success",resp.message);
+        }else{
+            Alert.alert("Error",resp.message);
+        }
+    }
+
+    const deactivated = async() =>{
+        let resp = await API.deactivate(motor.motor_id);
+        if(resp.status == 1){
+            getdata();
+            Alert.alert("Success",resp.message);
+        }else{
+            Alert.alert("Error",resp.message);
+        }
+    }
  
-  //  console.log("Params",params);
+
+    //  console.log("Params",params);
     return(
         <RNscreen>
             <ScrollView>
-                <FromProfile data={motor} navigation={navigation}/>
+                <FromProfile data={motor} activated={activated} deactivated={deactivated} navigation={navigation}/>
             </ScrollView>           
         </RNscreen>
     );
@@ -36,7 +58,7 @@ const ViewVehicle = ({navigation,route}) =>{
 
 export default ViewVehicle;
 
-const FromProfile = ({data,navigation}) =>{
+const FromProfile = ({data,navigation,activated,deactivated}) =>{
     
     return(
        <>
@@ -74,6 +96,13 @@ const FromProfile = ({data,navigation}) =>{
                 <Text style={{padding:10,marginBottom:10,color:Color.danger,textAlign:"center"}}>{data.isVerified == 0 ? "This Motorcycle is not verified yet please wait for the admin to response" : ""}</Text>
     </Card>
     <Card>
+        {data.isActive == 0 ? 
+            (
+                <Pbutton name="Activate Motorbike" onPress={activated}/>
+            ):(
+                <Pbutton name="Deactivate Motorbike" onPress={deactivated}/>
+            )
+        }
         {data.isVerified == 1 &&
              <Button name="Top up" mode='contained' onPress={()=>navigation.navigate("Top up",{motor_id:data.motor_id})} color={Color.primary}/>
         }
