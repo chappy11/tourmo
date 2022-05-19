@@ -46,5 +46,12 @@ export default {
     deactivate:async(vehicle_id) =>{
         let resp = await axios.post(ip+"vehicle/deactivate/"+vehicle_id);
         return resp.data;
+    },
+    pay:async(payload)=>{
+        const headers ={
+            "Content-Type" : "text/plain"
+        }
+        let resp  = await axios.post(ip+"vehicle/pay",payload,{headers});
+        return resp.data;
     }
 }

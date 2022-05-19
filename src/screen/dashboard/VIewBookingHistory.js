@@ -12,24 +12,15 @@ import { List } from '../../components/List';
 import { Pbutton } from '../../components/Rbutton';
 
 
-const ViewBooking = ({route,navigation}) => {
-    const data = route.params;
+const ViewBookingHistory = ({route,navigation}) => {
+    const data = route.params.item;
     const popAction = StackActions.pop(1);
-    const accept = () =>{
-        API.acceptbooking(data.booking_id).then(res=>{
-            if(res.status == 1){
-                Alert.alert("Success",res.message,[{text:"Okay",onPress:()=>navigation.push("List of Bookings")}]);
-                navigation.dispatch(popAction);
-            }else{
-                Alert.alert("Error",res.message)
-            }
-        })
-    }
+    console.log(data);
     
     return (
         <RNscreen>
             <View style={style.container}>
-                <Title style={{padding:15,color:'white'}}>View Profile</Title>
+                <Title style={{padding:15,color:'white'}}>History</Title>
                 <View style={style.container2}>
                   <ScrollView style={{ flex:1}}>
                     <Card style={{flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -52,6 +43,9 @@ const ViewBooking = ({route,navigation}) => {
                           <List color="black" title="Deducted Tourmopoints" value={data.deducted}/>
                     </View>
                     <View style={{borderBottomWidth:1,borderBottomColor:'lightgray',paddingVertical:5,paddingRight:10}}>
+                          <List color="black" title="Booking Stauts" value={data.booking_status == 5 ? "Completed" : "Canceled"}/>
+                    </View>
+                    <View style={{borderBottomWidth:1,borderBottomColor:'lightgray',paddingVertical:5,paddingRight:10}}>
                           <List color="black" title="Total" value={"Php "+data.total_amount}/>
                     </View>
                     <View style={{height:300,display:'flex',justifyContent:'center',alignItems:'center'}}>
@@ -59,9 +53,6 @@ const ViewBooking = ({route,navigation}) => {
                     </View>
 
             </ScrollView>
-                <View style={{padding:10}}>
-                <Pbutton name="Accept Booking" onPress={accept}/>
-                </View>
                    
                 </View>
             </View>
@@ -69,7 +60,7 @@ const ViewBooking = ({route,navigation}) => {
     );
 }
 
-export default ViewBooking;
+export default ViewBookingHistory;
 
 const style = StyleSheet.create({
     container:{

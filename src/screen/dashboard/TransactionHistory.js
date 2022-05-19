@@ -46,7 +46,15 @@ const TransactionHistory = ({route,navigation}) =>{
         <TouchableOpacity onPress={()=>navigation.navigate("View History",{item})}>
         <View style={{padding:10,borderBottomWidth:1,borderBottomColor:'lightgray'}}>
             <Title>{historytype(item.his_type)}</Title>
-            <Subheading>{"Php "+item.total_amount}</Subheading>
+            {item.his_type == 0 &&
+                <Subheading>{"Php "+item.amount}</Subheading> 
+            }
+            {item.his_type == 1  &&
+                <Subheading>{"Php "+item.total_amount}</Subheading>
+            }
+            {item.his_type == 2 &&
+                <Subheading>{"Php "+item.total_amount}</Subheading>
+            }
         </View>
         </TouchableOpacity>
     )

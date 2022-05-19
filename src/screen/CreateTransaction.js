@@ -159,7 +159,7 @@ const CreateTransaction = ({route,navigation}) => {
                   <Caption>Date Start</Caption>
                       <View style={{ flexDirection: 'row' }}>
                         <View style={{flex:1}}>
-                          <TextInput disabled placeholder={state.start}/>
+                          <TextInput editable={false} placeholder={state.start}/>
                         </View> 
                 </View>
                 </View>
@@ -167,7 +167,7 @@ const CreateTransaction = ({route,navigation}) => {
                       <Caption>Date End</Caption>
                       <View style={{ flexDirection: 'row' }}>
                         <View style={{flex:1}}>
-                          <TextInput disabled placeholder={state.end}/>
+                          <TextInput editable={false} placeholder={state.end}/>
                         </View> 
                 </View>
                  </View>

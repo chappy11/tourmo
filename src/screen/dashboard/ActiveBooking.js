@@ -30,11 +30,11 @@ const ActiveBooking = ({route}) =>{
     const [open,setopen] = React.useState(false);
     const [isReload,setisReload] = React.useState(false);
     const [isMotourista,setisMotourista] = React.useState(false);
-    const [booking, setbooking] = React.useState({});
+    
     const [hasbooking, sethasbooking] = React.useState(null);
     const [onStart, setonStart] = React.useState(0);
     const [count, setcount] = React.useState(0);
-    
+    const [booking, setbooking] = React.useState({});
     
     React.useEffect(() => {
          

@@ -200,9 +200,12 @@ const UpdateProfile = ({navigation}) => {
  
     return (
         <RNscreen>
-            <ScrollView>
+            <View style={style.container}>
+                <Title style={{padding:15,color:"white"}}>Update Profile</Title>
+                <View style={style.container2}>
+                <ScrollView>
             <Card style={style.pic}>
-                {isProfileChange ?
+                {/* {isProfileChange ?
                     (<>
                         <Avatar.Image source={{uri:input.profilepic}} size={200}/>
                         <View style={{flexDirection:'row'}}>
@@ -212,12 +215,12 @@ const UpdateProfile = ({navigation}) => {
                     </>)
                         :
                     (<>
-                        <TouchableOpacity onPress={()=>openMenu("profile")}>
+                        <TouchableOpacity onPress={()=>openMenu("profile")}> */}
                                <Avatar.Image source={{ uri: API.baseUrl + profile.user_pic }} size={200}/>               
-                        </TouchableOpacity>
-                         <Caption>Change Profile</Caption>
-                    </>)
-                }
+                        {/* </TouchableOpacity> */}
+                         {/* <Caption>Change Profile</Caption> */}
+                    {/* </>) */}
+                {/* } */}
             </Card>    
             
             <Card style={style.personalInfo}>
@@ -247,7 +250,7 @@ const UpdateProfile = ({navigation}) => {
                         
                 
             </Card>    
-            <Card style={style.personalInfo}>
+            {/* <Card style={style.personalInfo}>
                 <Title>Personal Information</Title>
                 <Caption>Firstname</Caption>
                     <TextInput placeholder={profile.firstname} onChangeText={(e)=>onChange("fname",e)}/>
@@ -260,7 +263,7 @@ const UpdateProfile = ({navigation}) => {
                 <View style={{ marginTop: 10 }}>
                         <Button color={Color.primary} onPress={submitchangedata} mode='contained' labelStyle={{ color: 'white' }} disabled={input.fname === "" && input.mname === "" && input.lname === "" && input.contact === "" ? true :false}>Save</Button>     
                 </View>
-             </Card>
+             </Card> */}
             <Card style={style.pic}>
                 <Title>My License</Title>
                     {isLicenseChange ? 
@@ -289,6 +292,9 @@ const UpdateProfile = ({navigation}) => {
                     </Dialog>
                 </Portal>    
             </ScrollView>
+                </View>
+            </View>
+            
      </RNscreen>        
     );
 }
@@ -296,6 +302,16 @@ const UpdateProfile = ({navigation}) => {
 export default UpdateProfile
 
 const style = StyleSheet.create({
+    container:{
+        backgroundColor:Color.color2,
+        flex:1
+    },
+    container2:{
+        backgroundColor:'white',
+        flex:1,
+        borderTopEndRadius:20,
+        borderTopStartRadius:20
+    },
     pic: {
         padding: 20,
         justifyContent: 'center',

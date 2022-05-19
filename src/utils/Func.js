@@ -19,6 +19,13 @@ export const Func = {
         const day = date.getDate().toString().padStart(2, 0);
         return year + "-" + month + "-" + day;
     },
+    addDate:(x) =>{
+        var newdate = moment(x, "YYYY-MM-DD").add('days',1);
+        let month = newdate.format('MM');
+        let day = newdate.format('DD');
+        let year = newdate.format('YYYY')
+        return year+"-"+month+"-"+day;
+    },
     daterange: (date1, date2) => {
         var start = moment(date1);
         var end = moment(date2);

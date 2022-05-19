@@ -44,15 +44,20 @@ const App = () => {
          setisload(false);
         AsyncStorage.clear();
       },
-      getnotif:async(id)=>{
-        let data = await API.getnotif(id);
-        setcount(data.count)
+      getnotif:async()=>{
+        let resp = await API.unread(id);
+        setcount(resp.count)
       }
      
     }),
     [],
   );
  
+  console.log(count);
+  const getcount = async() =>{
+    let resp = await API.getnotif(id);
+    setcount(resp.count);
+  }
 console.ignoredYellowBox = ["Warning: Each", "Warning: Failed"];
   useEffect(() => {
     
@@ -72,6 +77,7 @@ console.ignoredYellowBox = ["Warning: Each", "Warning: Failed"];
       })
       console.log(id);
     setTimeout(() => {
+      getcount();
       setisload(false);
     }, 5000);
   }, []);

@@ -5,8 +5,8 @@ import History from './History';
 import Moutorista from './Moutorista';
 import Vehicle from './Vehicle';
 
-export const ip = "http://192.168.1.16/tourmo/";
-//export const ip = "http://192.168.1.6/tourmo/";
+export const ip = "http://192.168.234.250/tourmo/";
+
 
 
 export  default {
@@ -68,6 +68,14 @@ export  default {
             "Content-Type" : "text/plain"
         }
         let resp = await axios.post(ip + "notification/read",payload,{headers});
+        return resp.data;
+    },
+    unread:async(user_id)=>{
+        let resp = await axios.get(ip + "notification/getunread/"+user_id)
+        return resp.data;
+    },
+    getreview:async(motor_id)=>{
+        let resp = await axios.get(ip+"review/getreview/"+motor_id);
         return resp.data;
     },
     ...Favorite,

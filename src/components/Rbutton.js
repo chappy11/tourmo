@@ -5,12 +5,12 @@ import {StyleSheet} from 'react-native';
 
 
 export const Pbutton = (props) =>(
-    <Button mode='contained' {...props} onPress={props.onPress} style={style.button} contentStyle={style.button} color={Color.color1} labelStyle={{color:'black'}} >{props.name}</Button>
+    <Button mode='contained' {...props} onPress={props.onPress}  contentStyle={style.button} color={Color.color1} labelStyle={{color:'black'}} >{props.name}</Button>
 )
 
-export const Sbutton = () =>{
+export const Sbutton = (props) =>(
     <Button mode='contained' {...props} onPress={props.onPress} contentStyle={style.button} color={Color.color2} labelStyle={{color:'white'}} >{props.name}</Button>
-}
+)
 
 const style = StyleSheet.create({
     button:{

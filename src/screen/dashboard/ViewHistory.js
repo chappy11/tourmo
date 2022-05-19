@@ -5,10 +5,12 @@ import RNscreen from "../../components/RNscreen";
 import { Color } from '../../utils/Themes';
 import API from '../../endpoints/API'
 import {UserContext} from '../../context/Context'
+import WebView from 'react-native-webview';
 
 
 const ViewHistory = ({route}) =>{
     const data = route.params.item;
+    console.log(data);
     return(
         <RNscreen>
             <View style={style.container}>
@@ -23,6 +25,9 @@ const ViewHistory = ({route}) =>{
 
                         {data.his_type == 2  &&
                             <Tourista booking_id={data.booking_id} type={data.his_type}/>
+                        }
+                        {data.his_type == 0 &&
+                           <WebView source={{ uri: data.receipt_link }}/>
                         }
 
                 </View>

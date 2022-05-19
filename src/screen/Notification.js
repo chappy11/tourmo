@@ -6,15 +6,16 @@ import RNscreen from '../components/RNscreen'
 import { UserContext } from '../context/Context'
 import API from '../endpoints/API'
 import { Color } from '../utils/Themes'
+import { useIsFocused } from '@react-navigation/native'
 
 
 const Notification = ({navigation}) => {
   const {id} = React.useContext(UserContext);
   const [list,setlist] = React.useState([]);
-
+  const isFocus = useIsFocused();
   React.useEffect(()=>{
     getdata();
-  },[])
+  },[isFocus])
   
   const getdata = async()=>{
     let resp = await API.getnotif(id);

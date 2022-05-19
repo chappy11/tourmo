@@ -1,15 +1,17 @@
 import React from 'react'
 import Screen from '../components/Screen';
-import {Caption, Headline,Subheading,Dialog,TextInput} from 'react-native-paper'
+import {Caption, Headline,Subheading,Dialog,TextInput,Avatar} from 'react-native-paper'
 import {FlatList,StyleSheet,View,Text,TouchableOpacity,Image,Alert} from 'react-native'
 import {Rating} from 'react-native-ratings';
-import { UserContext } from '../context/Context';
+import { AuthContext, UserContext } from '../context/Context';
 import API from '../endpoints/API';
 import { Color } from '../utils/Themes';
 import {Button} from '../components/Button';
 import { Func } from '../utils/Func';
 import CountDown from 'react-native-countdown-component';
 import { Pbutton } from '../components/Rbutton';
+import Const from '../utils/Const';
+import { useIsFocused } from '@react-navigation/native';
 
 function calculate(d2)  {
         let date1 = new Date();
@@ -19,7 +21,8 @@ function calculate(d2)  {
     }
 
 const Dashboard = ({navigation,route}) =>{
-  
+    const isFocus = useIsFocused();
+    const {getnotif} = React.useContext(AuthContext);
     const { user,id } = React.useContext(UserContext)
     const [isver, setisver] = React.useState(false);
     const [rate,setrate] = React.useState(3);
@@ -33,10 +36,11 @@ const Dashboard = ({navigation,route}) =>{
     const [count, setcount] = React.useState(0);
     React.useLayoutEffect(() => {
         getdata();
-    }, [route,isReload])
+        getnotif();
+    }, [route,isFocus])
     React.useLayoutEffect(() => {
           viewbooking();
-    },[route,isver,isMotourista])
+    },[route,isver,isMotourista,isFocus])
 
     const getdata = async() =>{
         let resp = await API.getprofile(user.user_id);
@@ -142,7 +146,7 @@ const Dashboard = ({navigation,route}) =>{
         <TouchableOpacity key={i} onPress={()=>navigation.navigate(item.link)}>
             <View style={style.item}>
                 <View style={{justifyContent:'center',alignItems:'center',flex:1,}}>
-                    <Image source={item.image} style={{width:50,height:50}} resizeMode='contain'/>
+                    <Avatar.Image source={item.image}/>
                 </View>
                     <Text style={{textAlign:'center'}}>{item.name}</Text>
             </View>
@@ -274,40 +278,45 @@ const style= StyleSheet.create({
 const navlist = [
     {
         name:"Vehicle",
-        image:require("../../asset/icon/motorcycle.png"),
+        image:require("../../asset/icons/vehicle.png"),
         link:"VehicleRoute"
     },
-    {
-        name:"Transaction History",
-        image:require("../../asset/icon/transactionhistory.png"),
-        link:"Transaction History"
-    },
+    // {
+    //     name:"Transaction History",
+    //     image:require("../../asset/icons/transaction-history.png"),
+    //     link:"Transaction History"
+    // },
     {
         name:"Pending Bookings",
-        image:require("../../asset/icon/bookings.png"),
+        image:require("../../asset/icons/pending-booking.png"),
         link:"List Of Bookings"
     },
     {
         name:"On Going Bookings",
-        image:require("../../asset/icon/mybookings.png"),
+        image:require("../../asset/icons/ongoing.png"),
         link:"On Going"
+    },
+    {
+        name:"Booking History",
+        image:require("../../asset/icons/past-booking.png"),
+        link:"Booking History"
     }
 ]
 
 const nav = [
     {
         name:"Transaction History",
-        image:require("../../asset/icon/transactionhistory.png"),
+        image:require("../../asset/icons/transaction-history.png"),
         link:"Transaction History"      
     },
     {
         name:"Active Booking",
-        image:require("../../asset/icon/transactionhistory.png"),
+        image:require("../../asset/icons/active-booking.png"),
         link:"Active Booking",
     },
     {
         name: "Favorites",
-        image: require("../../asset/fab.png"),
+        image: require("../../asset/icons/addfav.png"),
         link:"Favorite"
     }
 ];

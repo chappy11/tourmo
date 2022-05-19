@@ -1,4 +1,5 @@
 import React from 'react';
+import {Image} from 'react-native';
 import { NaivgationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from '../screen/SplashScreen';
@@ -24,10 +25,16 @@ import UpdateVehicle from '../screen/vehicle/UpdateVehicle';
 import Ongoing from '../screen/dashboard/Ongoing';
 import ConfirmReturn from '../screen/dashboard/ConfirmReturn';
 import ActiveBooking from '../screen/dashboard/ActiveBooking';
+import ViewReview from '../screen/review/ViewReview';
 import TransactionHistory from '../screen/dashboard/TransactionHistory';
 import ViewHistory from '../screen/dashboard/ViewHistory';
 import ViewNotification from '../screen/notification/ViewNotification';
 import Favorite from '../screen/Favorites';
+import { Color } from '../utils/Themes';
+import { AuthContext, NotifContext, UserContext } from '../context/Context';
+import API from '../endpoints/API';
+import BookingHistory from '../screen/dashboard/BookingHistory';
+import ViewBookingHistory from '../screen/dashboard/VIewBookingHistory';
 const MainStack = createNativeStackNavigator();
 
 // export const MainRoute = () => (
@@ -41,6 +48,7 @@ const MainStack = createNativeStackNavigator();
 const UnAuthStack = createNativeStackNavigator();
 
 export const UnauthRoute = () => (
+
     <UnAuthStack.Navigator screenOptions={{headerShown:false}} >
         <UnAuthStack.Screen name='SplashScreen' component={SplashScreen} />
         <UnAuthStack.Screen name='Login' component={Login} />
@@ -49,16 +57,48 @@ export const UnauthRoute = () => (
 )
 
 
+
+
 const AuthRouteTab = createBottomTabNavigator();
 
-export const AuthRoute = () => (
-    <AuthRouteTab.Navigator screenOptions={{headerShown:false}}>
-        <AuthRouteTab.Screen name="HomeRoute" component={HomeRoute} options={{tabBarLabel:"Home"}}/>
-         <AuthRouteTab.Screen name="UserRoute" component={UserRoute} options={{tabBarLabel:"Profile"}}/>
-        <AuthRouteTab.Screen name="DashboardRoute" component={DashboardRoute} options={{tabBarLabel:"Dashboard"}}/>
-        <AuthRouteTab.Screen name="NotificationRoute" component={NotificationRoute} options={{ tabBarLabel: "Notification" }} />
-    </AuthRouteTab.Navigator>
-)
+export const AuthRoute = () => {
+    const {count} = React.useContext(NotifContext)
+    console.log(count)
+    return(
+        <AuthRouteTab.Navigator screenOptions={{headerShown:false,tabBarActiveBackgroundColor:"black",tabBarStyle:{
+            backgroundColor:Color.color2,
+        }}}>
+            <AuthRouteTab.Screen name="HomeRoute"
+             component={HomeRoute} 
+            options={{tabBarLabel:"Home",tabBarIcon:()=>(
+                <Image source={require("../../asset/icons/home.png")} style={{width:20,height:20}}/>
+            )}}/>
+             <AuthRouteTab.Screen 
+             name="UserRoute" 
+             component={UserRoute} 
+             options={{tabBarLabel:"Profile",tabBarIcon:()=>(
+                <Image source={require("../../asset/icons/profile.png")} style={{width:20,height:20}}/>
+             ),
+             
+             }}/>
+            <AuthRouteTab.Screen 
+            name="DashboardRoute" 
+            component={DashboardRoute} 
+            options={{tabBarLabel:"Dashboard",tabBarIcon:()=>(
+                <Image source={require("../../asset/icons/dash.png")} style={{width:20,height:20}}/>
+             )}}/>
+            <AuthRouteTab.Screen name="NotificationRoute" 
+            component={NotificationRoute} 
+            options={{ tabBarLabel: "Notification" ,tabBarIcon:()=>(
+                <Image source={require("../../asset/icons/notif.png")} style={{width:20,height:20}}/>
+             ),
+             tabBarBadge:count
+             
+             }} />
+        </AuthRouteTab.Navigator>
+    );
+    
+}
 
 
 const DashBoardRouteStack = createNativeStackNavigator();
@@ -74,6 +114,8 @@ export const DashboardRoute = () =>(
         <DashBoardRouteStack.Screen name="Transaction History" component={TransactionHistory}/>
         <DashBoardRouteStack.Screen name="View History" component={ViewHistory}/>
         <DashBoardRouteStack.Screen name="Favorite"  component={Favorite}/>
+        <DashBoardRouteStack.Screen name="Booking History" component={BookingHistory}/>
+        <DashBoardRouteStack.Screen name="View Booking History" component={ViewBookingHistory}/>
     </DashBoardRouteStack.Navigator>
 
 )
@@ -81,7 +123,7 @@ export const DashboardRoute = () =>(
 
 const VehicleStack = createNativeStackNavigator();
 export const VehicleRoute = () => (
-    <VehicleStack.Navigator>
+    <VehicleStack.Navigator screenOptions={{headerShown:false}}>
         <VehicleStack.Screen name="Vehicle" component={Vehicle} />
         <VehicleStack.Screen name="Update Motourista" component={UpdateMoutorista}/>
         <VehicleStack.Screen name="Add Motor" component={AddVehicle}/>
@@ -99,6 +141,7 @@ export const HomeRoute = () => (
     <AuthStack.Navigator screenOptions={{headerShown:false}}>
         <AuthStack.Screen name="Home" component={Home} />
         <AuthStack.Screen name="View Motor" component={ViewMotor} />
+        <AuthStack.Screen name="View Review" component={ViewReview}/>
         <AuthStack.Screen name="Create Transaction" component={CreateTransaction}/>
     </AuthStack.Navigator>
 );
@@ -117,12 +160,12 @@ export const NotificationRoute = ()=> (
 
 const UserStack = createNativeStackNavigator();
 export const UserRoute = () => (
-    <UserStack.Navigator>
+    <UserStack.Navigator screenOptions={{headerShown:false}}>
         <UserStack.Screen name="Profile" component={Profile} />
         <UserStack.Screen name="Update Profile" component={UpdateProfile}/>
         <UserStack.Screen name="Create Motourista" component={CreateMoutorista} />
     </UserStack.Navigator>
-);
+); 
 
 
 const ListofBookingsStack = createNativeStackNavigator();

@@ -67,6 +67,18 @@ export default  {
     motourista: async(booking_id) =>{
         let resp = await Axios.get(ip+"booking/motourista/"+booking_id);
         return resp.data;
+    },
+    mcancelbooking: async(booking_id) =>{
+        let resp = await Axios.post(ip+"booking/cancelbymotourista/"+booking_id);
+        return resp.data;
+    },
+    booking_history: async(user_id) =>{
+        let resp = await Axios.get(ip+"booking/history/"+user_id);
+        return resp.data;
+    },
+    getearning: async(motor_id) =>{
+        let resp = await Axios.get(ip+"booking/getearning/"+motor_id);
+        return resp.data;
     }
 
 }

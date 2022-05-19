@@ -2,7 +2,7 @@ import React from 'react';
 import RNscreen from '../../components/RNscreen';
 import {Text, StyleSheet, View, FlatList, TouchableOpacity} from 'react-native';
 import { Color } from '../../utils/Themes';
-import { Headline } from 'react-native-paper';
+import { Avatar, Card, Headline, Subheading, Title } from 'react-native-paper';
 import API from '../../endpoints/API';
 import { UserContext } from '../../context/Context';
 const Ongoing = ({navigation}) =>{
@@ -29,18 +29,23 @@ const Ongoing = ({navigation}) =>{
 
 
     const renderitem = ({item}) =>(
-        <TouchableOpacity onPress={()=>navigation.navigate("Confirm Return",{item})}>
-            <View style={style.render}>
+        <TouchableOpacity style={{marginHorizontal:20}} onPress={()=>navigation.navigate("Confirm Return",{item})}>
+            
+            <Card mode='outlined' style={{padding:15,elevation:5} }>
                 <View style={{flex:1,flexDirection:'row'}}>
                     <Text style={{fontWeight:'bold',color:'black'}}>
-                        {item.name}
+                        <Avatar.Image source={{uri: API.baseUrl+item.user_pic}}/>
                     </Text>
-                    <Text style={{marginLeft:10}}>{item.firstname + " " + item.lastname}</Text>
+                    <View style={{marginLeft:15}}>
+                        <Subheading style={{fontWeight:'bold'}}>{item.firstname + " " + item.middlename + " " + item.lastname}</Subheading>
+                        <Subheading>{item.name + " " + item.brand}</Subheading>
+                    </View>
+                   
                     <View style={{flex:1,alignItems:'flex-end'}}>
                                 <View style={style.circle}/>
                     </View>
                 </View>
-            </View>
+            </Card>
         </TouchableOpacity>
     )
     return(
