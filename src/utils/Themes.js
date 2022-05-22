@@ -8,5 +8,5 @@ export const Color = {
     black:'#F000',
     color1:"#fbc02d",
     color2:"#2D2E2D",
-    
+    color3:"#5F4B09",
 }

@@ -9,12 +9,15 @@ import { Color } from "../utils/Themes";
 
 const Favorite = () =>{
    const [list,setlist] = React.useState([]);
-   const {id} = React.useContext(UserContext);
+   const {id,mode} = React.useContext(UserContext);
 
    React.useEffect(()=>{
         getdata();
    },[])
 
+   const background = React.useCallback(()=>{
+        return mode === "0" ? {flex:1,backgroundColor:Color.color3} : {flex:1,backgroundColor:Color.color2}
+    },[])
    const getdata = async()=>{
        try{
             let resp = await API.getfav(id);
@@ -36,7 +39,7 @@ const Favorite = () =>{
    );
     return(
         <RNscreen>
-            <View style={style.container}>
+            <View style={background()}>
                 <Headline style={{padding:20,color:'white',fontWeight:'bold'}}>Favorites</Headline>
                 <View style={style.container2}>
                     <FlatList

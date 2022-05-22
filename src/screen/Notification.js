@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet,FlatList,TouchableOpacity } from 'react-native'
-import React from 'react'
+import React,{useCallback} from 'react'
 import Screen from '../components/Screen'
 import { Headline, Subheading, Title,  } from 'react-native-paper'
 import RNscreen from '../components/RNscreen'
@@ -10,7 +10,7 @@ import { useIsFocused } from '@react-navigation/native'
 
 
 const Notification = ({navigation}) => {
-  const {id} = React.useContext(UserContext);
+  const {id,mode} = React.useContext(UserContext);
   const [list,setlist] = React.useState([]);
   const isFocus = useIsFocused();
   React.useEffect(()=>{
@@ -48,9 +48,15 @@ const Notification = ({navigation}) => {
       </TouchableOpacity>
   )
   
+  const background = useCallback(()=>{
+    return mode == 0 ? {flex:1,backgroundColor:Color.color3} : {flex:1,backgroundColor:Color.color2}
+  }  
+  ,[mode,isFocus])
+
+
   return (
     <RNscreen>
-        <View style={style.container}>
+        <View style={background()}>
           <Headline style={{color:"white",fontWeight:'bold',padding:20}}>Notification</Headline>
           <View style={style.container2}>
               <FlatList

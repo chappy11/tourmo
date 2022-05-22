@@ -6,7 +6,7 @@ import { motors } from '../../data/motor'
 import { Color } from '../utils/Themes'
 import { Headline, Title } from 'react-native-paper'
 import { Button } from '../components/Button'
-import { AuthContext, NotifContext } from '../context/Context'
+import { AuthContext, NotifContext, UserContext } from '../context/Context'
 import RNscreen from '../components/RNscreen'
 import API, { ip } from '../endpoints/API'
 import Geolocation from '@react-native-community/geolocation'
@@ -14,6 +14,7 @@ import { getDistance } from 'geolib';
 import { useIsFocused } from '@react-navigation/native'
 import ReviewComp from './review/ReviewComp'
 const Home = ({ navigation,route }) => {
+  const {mode} = React.useContext(UserContext);
   const isFocus = useIsFocused();
   const {count} = React.useContext(NotifContext);
   const {getnotif} = React.useContext(AuthContext);
@@ -107,7 +108,7 @@ export default Home;
 const style = StyleSheet.create({
   container:{
     flex:1,
-    backgroundColor:Color.color2
+    backgroundColor:Color.color3
   },
   container2:{
     backgroundColor:'white',

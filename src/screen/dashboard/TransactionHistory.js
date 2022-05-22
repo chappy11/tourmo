@@ -19,7 +19,7 @@ function historytype(history){
 
 
 const TransactionHistory = ({route,navigation}) =>{
-    const {id} = React.useContext(UserContext);
+    const {id,mode} = React.useContext(UserContext);
     const [list,setlist] = React.useState([]);
 
     React.useEffect(()=>{
@@ -42,6 +42,10 @@ const TransactionHistory = ({route,navigation}) =>{
    
     }
 
+    const background = React.useCallback(()=>{
+        return mode==="0" ? {flex:1,backgroundColor:Color.color3} : {flex:1,backgroundColor:Color.color2}
+    },[mode])
+
     const renderItem = ({item}) =>(
         <TouchableOpacity onPress={()=>navigation.navigate("View History",{item})}>
         <View style={{padding:10,borderBottomWidth:1,borderBottomColor:'lightgray'}}>
@@ -61,7 +65,7 @@ const TransactionHistory = ({route,navigation}) =>{
 
     return(
         <RNscreen>
-            <View style={style.container}>
+            <View style={background()}>
                 <Headline style={{padding:15,color:'white'}}>
                         Transaction History
                 </Headline>

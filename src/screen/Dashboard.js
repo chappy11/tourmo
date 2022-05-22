@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useCallback} from 'react'
 import Screen from '../components/Screen';
 import {Caption, Headline,Subheading,Dialog,TextInput,Avatar} from 'react-native-paper'
 import {FlatList,StyleSheet,View,Text,TouchableOpacity,Image,Alert} from 'react-native'
@@ -23,7 +23,7 @@ function calculate(d2)  {
 const Dashboard = ({navigation,route}) =>{
     const isFocus = useIsFocused();
     const {getnotif} = React.useContext(AuthContext);
-    const { user,id } = React.useContext(UserContext)
+    const { user,id,mode } = React.useContext(UserContext)
     const [isver, setisver] = React.useState(false);
     const [rate,setrate] = React.useState(3);
     const [review,setreview] = React.useState("");
@@ -141,6 +141,11 @@ const Dashboard = ({navigation,route}) =>{
     }
     console.log("HASBOOKING",booking);
 
+    const background = useCallback(()=>{
+        return mode == 0 ? {flex:1,backgroundColor:Color.color3} : {flex:1,backgroundColor:Color.color2}
+      }  
+      ,[mode,isFocus])
+    
     console.log("END DATE",calculate(booking.end_date))
     const renderItem = ({item,i}) =>(
         <TouchableOpacity key={i} onPress={()=>navigation.navigate(item.link)}>
@@ -155,7 +160,7 @@ const Dashboard = ({navigation,route}) =>{
  //   console.log(isver);
     return(
         
-    <View style={{flex:1,backgroundColor:Color.color2}}>
+    <View style={background()}>
         <View style={{padding:10,marginTop:10}}>
                 <Headline style={style.headline}>Dashboard</Headline>
         </View>
@@ -167,16 +172,23 @@ const Dashboard = ({navigation,route}) =>{
             ( 
                 <>
                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                    <View style={{padding:10}}>
+                        
+                {mode === "0" ? 
+                    (<>
+                        <View style={{padding:10}}>
                         <Headline>Tourista</Headline>
                     </View>
-                    <FlatList
+
+                        <FlatList
                             data={nav}
                             renderItem={renderItem}
                             numColumns={3}
                             keyExtractor={(val,i)=>i.toString()}
                         />
-                    {isMotourista &&
+                    </>):
+                    (
+                    <>
+                            {isMotourista &&
                         <>
                             <View style={{padding:10}}>
                                 <Headline>Motourista</Headline>
@@ -191,6 +203,13 @@ const Dashboard = ({navigation,route}) =>{
                         </>
 
                     }
+                    </>
+                    )
+                
+                
+                }
+                    
+                    
                     
                    </View>  
               </>
@@ -281,11 +300,11 @@ const navlist = [
         image:require("../../asset/icons/vehicle.png"),
         link:"VehicleRoute"
     },
-    // {
-    //     name:"Transaction History",
-    //     image:require("../../asset/icons/transaction-history.png"),
-    //     link:"Transaction History"
-    // },
+    {
+        name:"Transaction History",
+        image:require("../../asset/icons/transaction-history.png"),
+        link:"Transaction History"
+    },
     {
         name:"Pending Bookings",
         image:require("../../asset/icons/pending-booking.png"),

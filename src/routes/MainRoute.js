@@ -63,16 +63,32 @@ const AuthRouteTab = createBottomTabNavigator();
 
 export const AuthRoute = () => {
     const {count} = React.useContext(NotifContext)
-    console.log(count)
+    const {mode} = React.useContext(UserContext);
+    // console.log(count)
     return(
-        <AuthRouteTab.Navigator screenOptions={{headerShown:false,tabBarActiveBackgroundColor:"black",tabBarStyle:{
+        <AuthRouteTab.Navigator screenOptions={{headerShown:false,tabBarActiveBackgroundColor:"black",tabBarStyle:mode === "0" ? 
+        {
+            backgroundColor:Color.color3,
+        }:
+        {
             backgroundColor:Color.color2,
-        }}}>
+        }
+    
+    }}>
+          {mode === "0" &&
             <AuthRouteTab.Screen name="HomeRoute"
-             component={HomeRoute} 
+            component={HomeRoute} 
             options={{tabBarLabel:"Home",tabBarIcon:()=>(
                 <Image source={require("../../asset/icons/home.png")} style={{width:20,height:20}}/>
             )}}/>
+          }
+           
+            <AuthRouteTab.Screen 
+            name="DashboardRoute" 
+            component={DashboardRoute} 
+            options={{tabBarLabel:"Dashboard",tabBarIcon:()=>(
+                <Image source={require("../../asset/icons/dash.png")} style={{width:20,height:20}}/>
+             )}}/>
              <AuthRouteTab.Screen 
              name="UserRoute" 
              component={UserRoute} 
@@ -81,12 +97,7 @@ export const AuthRoute = () => {
              ),
              
              }}/>
-            <AuthRouteTab.Screen 
-            name="DashboardRoute" 
-            component={DashboardRoute} 
-            options={{tabBarLabel:"Dashboard",tabBarIcon:()=>(
-                <Image source={require("../../asset/icons/dash.png")} style={{width:20,height:20}}/>
-             )}}/>
+       
             <AuthRouteTab.Screen name="NotificationRoute" 
             component={NotificationRoute} 
             options={{ tabBarLabel: "Notification" ,tabBarIcon:()=>(

@@ -19,6 +19,7 @@ import API from './src/endpoints/API';
 
 const App = () => {
   const [isload, setisload] = useState(true);
+  const [mode,setmode] = useState(0);
   const [id, setid] = useState(null);
   const [isMotourista,setisMotourista] = useState(null);
   const [user,setuser] = useState(null);
@@ -30,10 +31,12 @@ const App = () => {
       signIn: (id,data,isVer) => {
         AsyncStorage.setItem("id", id);
         AsyncStorage.setItem("user",JSON.stringify(data))
+        AsyncStorage.setItem("mode","0");
         setisload(false);
         setid(id);
         setuser(data);
         setisVer(isVer);
+        setmode("0")
       
       },
       signUp: email => {
@@ -47,8 +50,11 @@ const App = () => {
       getnotif:async()=>{
         let resp = await API.unread(id);
         setcount(resp.count)
+      },
+      changemode:(str)=>{
+        setmode(str);
+        AsyncStorage.setItem("mode",str);
       }
-     
     }),
     [],
   );
@@ -75,6 +81,11 @@ console.ignoredYellowBox = ["Warning: Each", "Warning: Failed"];
       }).catch(res=>{
         setuser(null);
       })
+      AsyncStorage.getItem("mode").then(res=>{
+        setmode(res);
+      }).catch(err=>{
+        setmode(0)
+      })
       console.log(id);
     setTimeout(() => {
       getcount();
@@ -93,7 +104,7 @@ console.ignoredYellowBox = ["Warning: Each", "Warning: Failed"];
             <UnauthRoute/>
           :(
 
-            <UserContext.Provider value={{id,user,isVer}}>
+            <UserContext.Provider value={{id,user,isVer,mode}}>
               <NotifContext.Provider value={{count}}>
                   <AuthRoute/>
               </NotifContext.Provider>

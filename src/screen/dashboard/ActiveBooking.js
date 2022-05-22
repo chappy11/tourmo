@@ -23,7 +23,7 @@ const ActiveBooking = ({route}) =>{
     
     
     const [isRefresh,setisRefresh] = React.useState(false);
-    const { user,id } = React.useContext(UserContext)
+    const { user,id,mode } = React.useContext(UserContext)
     const [isver, setisver] = React.useState(false);
     const [rate,setrate] = React.useState(3);
     const [review,setreview] = React.useState("");
@@ -42,6 +42,9 @@ const ActiveBooking = ({route}) =>{
      
     },[route,isver,])
 
+    const background = React.useCallback(()=>{
+        return mode === "0" ? {flex:1,backgroundColor:Color.color3} : {flex:1,backgroundColor:Color.color2}
+    },[])
     
     const viewbooking = async() => {
         let resp = await API.getbookingbyuser(id);
@@ -138,7 +141,7 @@ const ActiveBooking = ({route}) =>{
     console.log(count);
     return(
         <RNscreen>
-            <View style={{flex:1,backgroundColor:Color.color2}}>
+            <View style={{flex:1,backgroundColor:Color.color3}}>
             {hasbooking ? (
                       <View style={{flex:1,backgroundColor:Color.color2}}>
                         <View style={{padding:10}}>
@@ -212,7 +215,7 @@ const ActiveBooking = ({route}) =>{
                         
                      </View>    
                     ): (
-                        <View style={{flex:1,backgroundColor:Color.color2}}>
+                        <View style={{flex:1,backgroundColor:Color.color3}}>
                             <View style={{padding:20}}>
                                   <Headline style={style.headline}>Dash Board</Headline>
                             </View>

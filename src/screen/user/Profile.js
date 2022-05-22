@@ -1,5 +1,5 @@
-import { View, Text,StyleSheet, Image,ScrollView,Alert } from 'react-native'
-import React, { useEffect } from 'react'
+import { View, Text,StyleSheet, Image,ScrollView,Alert,Switch } from 'react-native'
+import React, { useEffect,useCallback } from 'react'
 import { AuthContext, NotifContext, UserContext } from '../../context/Context'
 import Screen from '../../components/Screen';
 import API, { ip } from '../../endpoints/API';
@@ -9,19 +9,21 @@ import { Color } from '../../utils/Themes';
 import RNscreen from '../../components/RNscreen';
 import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 
+
+
+
 const Profile = ({navigation,route}) => {
   const isFocus =  useIsFocused();
-  const {user} = React.useContext(UserContext);
-  const {signOut,getnotif } = React.useContext(AuthContext)
+  const {user,mode} = React.useContext(UserContext);
+  const {signOut,getnotif,changemode} = React.useContext(AuthContext)
   const {count} =React.useContext(NotifContext);
   const [profile, setprofile] = React.useState({});
-
+  const [enable,setenable] = React.useState(mode === 0 ? true:false);
   useEffect(() => {
     getuser();
     getnotif();
   },[route,isFocus])
 
-  console.log("COUNT",count)
   const getuser = async() => {
     
       let resp = await API.getprofile(user.user_id);
@@ -33,10 +35,24 @@ const Profile = ({navigation,route}) => {
     //     Alert.alert("Error","Something went wrong",0)
     // }
   }
-  
+
+  const background = useCallback(()=>{
+    return mode == 0 ? {flex:1,backgroundColor:Color.color3} : {flex:1,backgroundColor:Color.color2}
+  }  
+  ,[mode,isFocus,enable])
+
+  const toggle = () =>{
+      setenable(e=>!e);
+      if(mode === "0"){
+        changemode("1");
+      }else{
+        changemode("0");
+      }
+ }
+ console.log("MODE",mode);
   return (
     <RNscreen> 
-      <View style={style.container}>
+      <View style={background()}>
         <Title style={{padding:20,color:'white'}}>Profile</Title>
         <View style={style.container2}>
         <ScrollView style={{flex:1}} >
@@ -45,6 +61,15 @@ const Profile = ({navigation,route}) => {
               <Title>{profile.firstname+" "+profile.middlename+" "+profile.lastname}</Title>
               <Text>{profile.email}</Text>
               <Text>{profile.contact}</Text>
+              
+              {profile.isMotourista == 1 &&
+                 <Switch
+                 thumbColor={enable ? Color.color2 : Color.color3}
+                 onValueChange={toggle}
+                 value={enable}
+               />
+              }
+             
           </View>
           <View style={style.card}>
             <Title>License picture</Title>

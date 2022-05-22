@@ -1,6 +1,7 @@
 
 import React from 'react'
 import {View,StyleSheet,ImageBackground,Text,ScrollView,TouchableOpacity,FlatList,Alert,LogBox,Image} from 'react-native'
+import {Slider} from '@miblanchard/react-native-slider';
 import ImagePicker from 'react-native-image-crop-picker';
 import CalendarPicker from 'react-native-calendar-picker/CalendarPicker';
 import { Button as Rbutton, Caption, Dialog, Headline, Menu, Portal, Title, Modal } from 'react-native-paper';
@@ -26,7 +27,9 @@ const AddVehicle = ({ navigation, route }) => {
         cr: "",
         rate:0,
         date:"",
+        date_purchase:"",
     });
+    const [op,setop] = React.useState(false);
     const [openCalendar,setopenCalendar] = React.useState(false);
     const [isSelect, setisSelect] = React.useState(false);
     const [open, setopen] = React.useState(false);
@@ -34,17 +37,22 @@ const AddVehicle = ({ navigation, route }) => {
     const onChange = (name,value) => {
         setdata({...data,[name]:value})
     }
+    const [min,setmin] = React.useState(0);
+    const [max,setmax] = React.useState(0);
 
     LogBox.ignoreAllLogs();
     const [isloading, setisloading] = React.useState(false);
-
-    const getmotorcycle = (nam,bran,trans) => {
+    const [value,setvalue] = React.useState(0);
+    
+    const getmotorcycle = (nam,bran,trans,min,max) => {
         setdata({
             ...data,
             name: nam,
             brand: bran,
             transmission:trans
         })
+        setmin(min);
+        setmax(max);
         setisSelect(false)
         
     }
@@ -183,10 +191,6 @@ const AddVehicle = ({ navigation, route }) => {
                 Alert.alert("Error","You must indicate the Name,Brand,and Transmission of your Motorcycle")
                 setisloading(false);
             }
-            else if (data.rate <= 0) {
-                Alert.alert("Error","Rate should be less than or equal to 0")
-                setisloading(false);
-            }
             else if (data.pic1 == "" || data.pic2 == "" || data.pic3 == "") {
                 Alert.alert("Error", "You must put pictures of you motorcycle");
                 setisloading(false);
@@ -223,9 +227,10 @@ const AddVehicle = ({ navigation, route }) => {
                     name:Func.filename(data.cr)
                 })
                 formdat.append("m_id", route.params.m_id);
+                formdat.append("purchased_date",data.date_purchase);
                 formdat.append("user_id", user.user_id);
                 formdat.append("name", data.name);
-                formdat.append("rate",data.rate)
+                formdat.append("rate",parseInt(value))
                 formdat.append("brand", data.brand);
                 formdat.append("transmission", data.transmission);
                 formdat.append("date",data.date);
@@ -285,8 +290,29 @@ const AddVehicle = ({ navigation, route }) => {
                         </View>      
                         <View style={{...style.nameContainer, marginBottom:10 }}>
                             <Caption>Rate</Caption>
-                                <TextInput placeholder="0" keyboardType="numeric" onChangeText={(e)=>onChange("rate",e)}/>        
+                                <TextInput placeholder={"PHP "+(parseInt(value)).toString()+".00"} value={parseInt(value)}  keyboardType="numeric" editable={false}/>        
                         </View>        
+                        <View style={{...style.nameContainer, marginBottom:10 }}>
+                        <Slider
+                        minimumValue={parseInt(min)}
+                        maximumValue={parseInt(max)}
+                        value={value}
+                        onValueChange={value => setvalue(value)}
+                        />  
+                        </View>
+                        <View style={{...style.nameContainer, marginBottom:10 }}>
+                        <View style={{flexDirection:'row'}}>
+                            <View style={{flex:1}}>
+                                 <Text style={{textAlign:'left',fontSize:18}}>PHP {min}</Text>
+                            </View>
+                            <View style={{flex:1}}>
+                                    <Text style={{textAlign:'right',fontSize:18}}>PHP {max}</Text>
+                            </View>
+                        </View>  
+                        </View> 
+                        
+                        
+                      
                     </Card>
                     <Card>
                        <Title style={{padding:10}}>Motorcycle Pictures</Title> 
@@ -340,6 +366,19 @@ const AddVehicle = ({ navigation, route }) => {
                         </View>
                         </View>
                         </View>
+                        <View style={{paddingHorizontal:10,paddingVertical:20}}>
+                        <Caption>Date Purchse</Caption>
+                      <View style={{ flexDirection: 'row' }}>
+                        <View style={{flex:1}}>
+                          <TextInput disabled placeholder={data.date_purchase} />
+                        </View> 
+                        <View style={{justifyContent:'center',alignItems:'center',padding:10}}>
+                          <TouchableOpacity onPress={()=>setop(true)}>
+                              <Image source={require('../../../asset/icon/calendar.png')} style={{ width: 30, height: 30 }} />
+                          </TouchableOpacity>    
+                        </View>
+                        </View>
+                        </View>
                     </Card>
                     <Card>
                             <Button name="Add" mode='contained' onPress={submit} disabled={isloading ? true : false} color={Color.primary}/>
@@ -363,6 +402,16 @@ const AddVehicle = ({ navigation, route }) => {
            onDateChange={(date)=>{
              onChange("date",Func.dateformat(date));
              setopenCalendar(false)
+           }}
+        />
+      </Modal>
+      <Modal visible={op} onDismiss={()=>setop(false)} style={{backgroundColor:'white'}}>
+        <CalendarPicker
+           startFromMonday={true}
+           todayBackgroundColor="#f2e6ff"
+           onDateChange={(date)=>{
+             onChange("date_purchase",Func.dateformat(date));
+             setop(false)
            }}
         />
       </Modal>     
@@ -444,7 +493,7 @@ export const Choose = ({getmotorcycle,setisSelect}) => {
     
 
     const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={()=>getmotorcycle(item.name,item.brand,item.transmission)}>
+    <TouchableOpacity onPress={()=>getmotorcycle(item.name,item.brand,item.transmission,item.min_price,item.max_price)}>
         <Card style={style.renderItem}>
             <Title>{item.name}</Title>
             <Text>{item.brand}</Text>
